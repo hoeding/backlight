@@ -78,7 +78,7 @@ void dbg( const bool &newLine, const int &tabs,
   header(newLine, tabs);
   try {
     cout << description << std::fixed << std::setprecision(13) << data << flush;
-  } catch (exception e) {
+  } catch (exception &e) {
     cerr << "template dbg threw exception: " << e.what() << endl;
   }
 }
