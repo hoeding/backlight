@@ -30,3 +30,17 @@
 *.exe
 *.out
 *.app
+
+# cache
+.ccls-cache
+
+# generated files
+
+build
+cmake_build
+manual_build
+
+# local environment and testing
+.clang-format
+.ccls
+clean.sh
