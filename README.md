@@ -5,15 +5,25 @@ Simple program to adjust backlight brightness
 
 To increase brightness by 10%
 
-`bl-increment 10`
+`bli 10`
 
 To decrease brightness by 20%
 
-`bl-increment -20`
+`bld -20`
 
 To set brightness to 75%
 
-`bl-absolute 75`
+`bla 75`
+
+To generate simple config files
+
+`bl-scanner --xdg` 
+
+`bl-scanner --etc`
+  
+`bl-scanner --dir=/tmp/foo/`
+  
+
 ## Configuration:
 tldr; `mkdir --parents ~/.config/backlight/config && ls /sys/class/backlight/ >> ~/.config/backlight/config`.
 
