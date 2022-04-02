@@ -1,16 +1,18 @@
 #ifndef BACKLIGHT_UTILITY_HPP
 #define BACKLIGHT_UTILITY_HPP
-#include <filesystem>
 #include "logging.hpp"
+#include <filesystem>
 #include <fstream>
 #include <iostream>
+#include <numeric>
 #include <vector>
 
 namespace utility {
 using namespace std;
 using logging::dbg;
 using std::filesystem::path;
-int get_int_from_file(path path) {
+/* @brief  Attempt to get an integer from a file, always returns */
+int get_int_from_file(path path) noexcept {
   try {
     ifstream infile;
     infile.open(path);
@@ -19,7 +21,10 @@ int get_int_from_file(path path) {
     int i = std::stoi(str);
     infile.close();
     return i;
-  } catch (...) {
+  } catch (std::exception &e) {
+    cerr << "\n Caught" << e.what();
+    return 0;
+  }  catch (...) {
     cerr << "\nUnhandled exception reading path:" << path << endl;
     return 0;
   }
@@ -30,9 +35,7 @@ void put_int_to_file(int i, path path) {
     ofstream outfile{path};
     outfile << i << endl;
     outfile.close();
-  } catch (...) {
-    cerr << "Could not write " << i << " to " << path << endl;
-  }
+  } catch (...) { cerr << "Could not write " << i << " to " << path << endl; }
 }
 
 vector<string> filename_to_vector_of_strings(path filename) {
@@ -56,6 +59,23 @@ vector<string> filename_to_vector_of_strings(path filename) {
   // Close The File
   in.close();
   return returner;
+}
+
+void strings_to_file(string str, path filename) noexcept {
+  try {
+    ofstream out(filename);
+    if (!out) {
+      dbg(true, 0, "Cannot open the File : ", filename);
+      out.close();
+    }
+  } catch (...) {
+    dbg(true, 0, "Unhandled exception writing:", str);
+    dbg(false,1, "to path:", filename);
+  };
+}
+void strings_to_file(vector<string> vecOfStr, path filename) {
+  string big_string = accumulate(vecOfStr.begin(), vecOfStr.end(), string{});
+  strings_to_file(big_string, filename);
 }
 
 } // namespace utility

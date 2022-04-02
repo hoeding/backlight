@@ -14,6 +14,9 @@ using namespace utility;
 
 /** @brief Single argument increments/decrements current brightness by N% */
 int main(const int argc, const char *argv[]) {
+  #ifndef NDEBUG
+  dbg(true, 0, "backlight-absolute version VERSION");
+  #endif
   int percentage = arguments::parse_args(argc, argv);
   /** builtin search paths */
   vector<path> paths_to_config_files{{"/etc/backlight/config"}};

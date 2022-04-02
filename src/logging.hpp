@@ -1,7 +1,7 @@
 #ifndef BACKLIGHT_LOGGING_HPP
 #define BACKLIGHT_LOGGING_HPP
 #include <bitset>
-#include <concepts>
+#include "concepts.hpp"
 #include <filesystem>
 #include <iomanip>
 #include <iostream>
@@ -9,9 +9,11 @@
 #include <vector>
 #include <type_traits>
 
+
 namespace logging {
 using namespace std;
 using std::filesystem::path;
+using concepts::printable;
 
 /*
 
@@ -47,21 +49,10 @@ priority_enum operator and (priority_enum lhs, priority_enum rhs){
                                     static_cast<priority_enum_thicccness>(rhs));
 }
 
-
-
 */
 
 
 
-
-
-
-
-template <class T>
-concept printable =
-    (std::is_integral<T>::value or std::is_convertible<T, int>::value or
-     std::is_convertible<T, float>::value or std::is_same<T, string>::value or
-     std::is_same<T, path>::value or std::is_convertible<T, string>::value);
 
 void header(const bool newLine, const int tabs) {
   if (tabs < 0)
@@ -86,15 +77,17 @@ void dbg(const bool &newLine, const int &tabs, const string &description) {
   header(newLine, tabs);
   cout << description << flush;
 };
-
-template <printable T>
-void dbg(const bool &newLine, const int &tabs, const string &description,
-         const vector<T> data) {
+void dbg(const bool &newLine, const int &tabs ) {
+  header(newLine,tabs);
+  cout << flush;
+};
+ template <printable T>
+void dbg(const bool &newLine, const int &tabs, const string &description, const vector<T> data) {
   dbg(newLine, tabs, description);
   for (T datum : data) {
     dbg(true, 1, "", datum);
-  }
-}
+  };
+};
 } // namespace logging
 
 #endif
