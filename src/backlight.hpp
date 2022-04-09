@@ -1,4 +1,4 @@
-#ifndef BACKLIGHT_BACKLIGHT_HPP
+ #ifndef BACKLIGHT_BACKLIGHT_HPP
 #define BACKLIGHT_BACKLIGHT_HPP
 #include <filesystem>
 #include <stdexcept>
@@ -65,12 +65,16 @@ void adjust_brightness_to_target_percentage(const path path, const int percentag
   dbg(true, 0, "adjust_brightness_to_target_percentage called with percentage=",
       percentage);
   #endif
-  int max = get_int_from_file(path / "max_brightness");
-  int target_value = max * percentage;
-  target_value = target_value / 100;
-  if (target_value > max)
-    target_value = max;
-  put_int_to_file(target_value, path / "brightness");
+  if (percentage == 0) {
+    put_int_to_file(0, path / "brightness");
+  } else {
+    int max = get_int_from_file(path / "max_brightness");
+    int target_value = max * percentage;
+    target_value = target_value / 100;
+    if (target_value > max)
+      target_value = max;
+    put_int_to_file(target_value, path / "brightness");
+  }
 }
 
 path get_xdg_config_path(){
