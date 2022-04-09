@@ -14,6 +14,6 @@ concept printable = requires(T a) {
   cerr << a;
 };
 template <class T>
-concept floatable = std::is_convertible_v<T, float>;
+concept floatable = (std::is_convertible<T, float>::value);
 } // namespace concepts
 #endif
