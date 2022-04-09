@@ -1,9 +1,9 @@
 #include "logging.hpp"
 #include "parse_arguments.hpp"
-#include "parse_config_file.hpp"
 #include "utility.hpp"
-#include <filesystem>
 #include <csignal>
+#include <filesystem>
+#include <project_version.hpp>
 
 #include <vector>
 
@@ -15,8 +15,8 @@ using namespace utility;
 /** @brief print battery level every N  */
 int main([[maybe_unused]]const int argc, [[maybe_unused]] const char *argv[]) {
   #ifndef NDEBUG
-  dbg(true, 0, " version VERSION");
-  #endif
+  dbg(true, 0, " version PROJECT_VERSION");
+#endif
 
   return (EXIT_SUCCESS);
 }

@@ -1,7 +1,7 @@
 #include "backlight.hpp"
 #include "logging.hpp"
-#include "parse_config_file.hpp"
 #include "utility.hpp"
+#include <project_version.hpp>
 #include <chrono>
 #include <ctime>
 #include <memory>
@@ -162,6 +162,7 @@ void my_time_fn(data_pack *shared_state) {
   }
 };
 void brightness_fn(data_pack *shared_state) {
+  using namespace backlight;
   try {
     cerr << "brightness_fn called\n" << flush;
     string old_str{""};
@@ -170,7 +171,7 @@ void brightness_fn(data_pack *shared_state) {
     for (; shared_state->are_we_still_going(); sleep_for(500ms)) {
       for (auto config_file : paths_to_config_files) {
         vector<path> devices =
-            configfile::get_backlights_from_config_file(config_file);
+            get_backlights_from_config_file(config_file);
         for (auto device : devices) {
           float how_bright =
               backlight::get_current_brightness_percentage(device);
@@ -193,7 +194,7 @@ void brightness_fn(data_pack *shared_state) {
 };
 
 void writer_fn(data_pack *shared_state) {
-  cout << "Swayutil version VERSION\n" << flush;
+  cout << "Swayutil version PROJECT_VERSION\n" << flush;
   for (; shared_state->are_we_still_going(); this_thread::sleep_for(200ms)) {
     if (shared_state->are_we_stale()) {
       cout << shared_state->read_battery() << " "

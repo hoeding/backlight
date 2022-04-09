@@ -1,13 +1,13 @@
- #ifndef BACKLIGHT_BACKLIGHT_HPP
+#ifndef BACKLIGHT_BACKLIGHT_HPP
 #define BACKLIGHT_BACKLIGHT_HPP
-#include <filesystem>
-#include <stdexcept>
 #include "logging.hpp"
 #include "utility.hpp"
+#include <filesystem>
+#include <stdexcept>
 
 namespace backlight {
-  using std::vector;
-  using std::filesystem::path;
+using std::vector;
+using std::filesystem::path;
 
 /** builtin search paths */
 const vector<path> default_paths{{"/etc/backlight/config"},
@@ -21,11 +21,11 @@ using std::filesystem::path;
  * @param path sysfs path of device containing brightness knobs
  * @param percentage increment/decrement */
 void adjust_brightness_by_increment(const path path, const int percentage) {
-  #ifndef NDEBUG
+#ifndef NDEBUG
   dbg(true, 0, "adjust_brightness_by_increment called with path=", path);
   dbg(true, 0,
       "adjust_brightness_by_increment called with percentage=", percentage);
-  #endif
+#endif
   int max = get_int_from_file(path / "max_brightness");
   int prev = get_int_from_file(path / "actual_brightness");
   int min = 0;
@@ -36,10 +36,12 @@ void adjust_brightness_by_increment(const path path, const int percentage) {
    * max_brightness*/
   if (percentage > 0) {
     if (increment == 0) {
-      increment = 1;}
+      increment = 1;
+    }
   } else if (percentage < 0) {
     if (increment == 0) {
-      increment = -1;}
+      increment = -1;
+    }
   } else { // this is silly
     cerr << "hodor";
   }
@@ -50,21 +52,22 @@ void adjust_brightness_by_increment(const path path, const int percentage) {
     target_value = min;
   if (target_value > max)
     target_value = max;
-  #ifndef NDEBUG
+#ifndef NDEBUG
   dbg(true, 0, "Adjusting brightness to ", target_value);
-  #endif
+#endif
   put_int_to_file(target_value, path / "brightness");
 }
 /** @brief Change brightness of device to a given percentage
  * @param path sysfs path of device containing brightness knobs
  * @param percentage target percentage */
-void adjust_brightness_to_target_percentage(const path path, const int percentage) {
-  #ifndef NDEBUG
+void adjust_brightness_to_target_percentage(const path path,
+                                            const int percentage) {
+#ifndef NDEBUG
   dbg(true, 0,
       "adjust_brightness_to_target_percentage called with path=", path);
   dbg(true, 0, "adjust_brightness_to_target_percentage called with percentage=",
       percentage);
-  #endif
+#endif
   if (percentage == 0) {
     put_int_to_file(0, path / "brightness");
   } else {
@@ -77,18 +80,36 @@ void adjust_brightness_to_target_percentage(const path path, const int percentag
   }
 }
 
-path get_xdg_config_path(){
+path get_xdg_config_path() {
   path xdg_config_dir{};
   if (const char *env_p = std::getenv("HOME")) {
     xdg_config_dir = path{env_p} / ".config/backlight/config";
   }
   return xdg_config_dir;
 }
-
+/** takes a sysfs path to a backlight device and returns current brightness in
+ * terms of percent of maximum brightess. */
 auto get_current_brightness_percentage(const path device) {
   int max = get_int_from_file(device / "max_brightness");
   int cur = get_int_from_file(device / "actual_brightness");
-  return utility::ez_pct (cur, max);
+  return utility::ez_pct(cur, max);
 }
+
+/** Scans through sysfs and returns full paths to valid devices */
+vector<path> get_backlights_from_config_file(path config) {
+  vector<path> returner;
+  ifstream infile;
+  infile.open(config);
+  while (infile.good()) {
+    string line;
+    getline(infile, line);
+    if (line != string{}) {
+      line = "/sys/class/backlight/" + line;
+      returner.push_back(line);
+    }
+  }
+  return returner;
+}
+
 } // namespace backlight
 #endif

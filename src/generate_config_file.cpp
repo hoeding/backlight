@@ -1,7 +1,6 @@
 #include "backlight.hpp"
 #include "logging.hpp"
 #include "parse_arguments.hpp"
-#include "parse_config_file.hpp"
 #include "utility.hpp"
 #include <filesystem>
 #include <vector>
