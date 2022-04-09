@@ -46,3 +46,16 @@ Requires a C++20 compiler.
 
 `make install`
 ## Troubleshooting:
+
+
+# swayutil
+*not final name
+
+swayutil is intended to provide useful information to your sway desktop. It currently monitors screen brightness, time and battery remaining.
+
+## Usage
+
+In your sway config file (~/.config/sway/config) replace the default status_command line with
+
+`status_command swayutil`
+
