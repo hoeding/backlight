@@ -13,5 +13,7 @@ concept printable = requires(T a) {
   cout << a;
   cerr << a;
 };
+template <class T>
+concept floatable = std::is_convertible_v<T, float>;
 } // namespace concepts
 #endif

@@ -6,11 +6,25 @@
 #include <iostream>
 #include <numeric>
 #include <vector>
+#include <concepts>
 
 namespace utility {
 using namespace std;
 using logging::dbg;
 using std::filesystem::path;
+
+/* @brief Average two numbers, returns 0 if indivisble */
+template <concepts::floatable Ta, concepts::floatable Tb>
+float ez_pct(const Ta numerator, const Tb denominator) {
+  auto returner = 420.69;
+  try{
+  returner =  (100.0 * (float)numerator) / 
+                  (float)denominator; // Integer rounding
+  } catch (...) {
+    cerr << "ez_pct threw exception" << endl;
+  }
+  return returner;
+};
 /* @brief  Attempt to get an integer from a file, always returns */
 int get_int_from_file(path path) noexcept {
   try {
@@ -22,7 +36,7 @@ int get_int_from_file(path path) noexcept {
     infile.close();
     return i;
   } catch (std::exception &e) {
-    cerr << "\n Caught" << e.what();
+    cerr << "\n Caught:" << e.what();
     return 0;
   }  catch (...) {
     cerr << "\nUnhandled exception reading path:" << path << endl;
@@ -45,9 +59,9 @@ vector<string> filename_to_vector_of_strings(path filename) {
   string str;
   // Check if object is valid
   if (!in) {
-    dbg(true, 0, "Cannot open the File : ", filename);
+    dbg(true, 0, "Cannot open the File:", filename);
   } else {
-    dbg(true, 0, "File opened :", filename);
+    dbg(true, 0, "File opened:", filename);
 
     // Read the next line from File untill it reaches the end.
     while (getline(in, str)) {

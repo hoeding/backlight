@@ -10,12 +10,7 @@ using std::vector;
 using std::filesystem::path;
 using namespace logging;
 using namespace utility;
-
-
-/** builtin search paths */
-const vector<path> default_paths{{"/etc/backlight/config"},
-                                 {"/home/jeff/.config/backlight/config"}};
-
+using arguments::default_paths;
 /** @brief Single argument increments/decrements current brightness by N% */
 int main(const int argc, const char *argv[]) {
   int percentage = arguments::parse_args(argc, argv);

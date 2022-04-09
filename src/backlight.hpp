@@ -6,6 +6,12 @@
 #include "utility.hpp"
 
 namespace backlight {
+  using std::vector;
+  using std::filesystem::path;
+
+/** builtin search paths */
+const vector<path> default_paths{{"/etc/backlight/config"},
+                                 {"/home/jeff/.config/backlight/config"}};
 using namespace std;
 using namespace utility;
 using logging::dbg;
@@ -75,5 +81,10 @@ path get_xdg_config_path(){
   return xdg_config_dir;
 }
 
+auto get_current_brightness_percentage(const path device) {
+  int max = get_int_from_file(device / "max_brightness");
+  int cur = get_int_from_file(device / "actual_brightness");
+  return utility::ez_pct (cur, max);
+}
 } // namespace backlight
 #endif

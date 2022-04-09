@@ -13,7 +13,7 @@ using namespace logging;
 using namespace utility;
 
 /** @brief Single argument increments/decrements current brightness by N% */
-int main(const int argc, const char *argv[]) {
+int main([[maybe_unused]]const int argc, [[maybe_unused]] const char *argv[]) {
 
   /* Configuration variables, TODO: make configurable */
 
@@ -40,7 +40,7 @@ int main(const int argc, const char *argv[]) {
   } else {
     dbg(true, 0,
         "/sys/class/backlight/ path does not exist. Please ensure that \
-        the necessary kernel options are enabled (CONFIG_BACKLIGHT_CLASS_DEVICE)");
+        the necessary kernel options are enabled (kernel option: BACKLIGHT_CLASS_DEVICE)");
     std::exit(EXIT_FAILURE);
   }
 
