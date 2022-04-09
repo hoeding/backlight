@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.20)
 project(backlight
-    VERSION 0.0.2
+    VERSION 0.0.3
     DESCRIPTION "Simple backlight adjustment for laptops"
     LANGUAGES CXX)
 set(CMAKE_BUILD_TYPE Debug)
