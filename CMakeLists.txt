@@ -7,7 +7,9 @@ set(CMAKE_BUILD_TYPE Debug)
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 include (GNUInstallDirs)
 find_package(Threads REQUIRED)
-option(BIG_WARN "Use strict compiler flags" OFF)
+option(BIG_WARN "Use strict compiler flags" ON)
+configure_file(src/version.hpp.in project_version.hpp)
+include_directories(${CMAKE_CURRENT_BINARY_DIR})
 
 add_executable( bli
         src/backlight_increment.cpp)
