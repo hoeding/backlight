@@ -1,12 +1,12 @@
 #ifndef BACKLIGHT_UTILITY_HPP
 #define BACKLIGHT_UTILITY_HPP
 #include "logging.hpp"
+#include <concepts>
 #include <filesystem>
 #include <fstream>
 #include <iostream>
 #include <numeric>
 #include <vector>
-#include <concepts>
 
 namespace utility {
 using namespace std;
@@ -17,12 +17,10 @@ using std::filesystem::path;
 template <concepts::floatable Ta, concepts::floatable Tb>
 float ez_pct(const Ta numerator, const Tb denominator) {
   auto returner = 420.69;
-  try{
-  returner =  (100.0 * (float)numerator) / 
-                  (float)denominator; // Integer rounding
-  } catch (...) {
-    cerr << "ez_pct threw exception" << endl;
-  }
+  try {
+    returner =
+        (100.0 * (float)numerator) / (float)denominator; // Integer rounding
+  } catch (...) { cerr << "ez_pct threw exception" << endl; }
   return returner;
 };
 /* @brief  Attempt to get an integer from a file, always returns */
@@ -38,7 +36,7 @@ int get_int_from_file(path path) noexcept {
   } catch (std::exception &e) {
     cerr << "\n Caught:" << e.what();
     return 0;
-  }  catch (...) {
+  } catch (...) {
     cerr << "\nUnhandled exception reading path:" << path << endl;
     return 0;
   }
@@ -84,7 +82,7 @@ void strings_to_file(string str, path filename) noexcept {
     }
   } catch (...) {
     dbg(true, 0, "Unhandled exception writing:", str);
-    dbg(false,1, "to path:", filename);
+    dbg(false, 1, "to path:", filename);
   };
 }
 void strings_to_file(vector<string> vecOfStr, path filename) {

@@ -1,11 +1,11 @@
 #include "backlight.hpp"
 #include "logging.hpp"
 #include "utility.hpp"
-#include <project_version.hpp>
 #include <chrono>
 #include <ctime>
 #include <memory>
 #include <mutex>
+#include <project_version.hpp>
 #include <shared_mutex>
 #include <thread>
 #include <time.h>
@@ -81,8 +81,6 @@ public:
     returner = brightness;
     brightness_mtx.unlock();
     return returner;
-
-    return brightness;
   };
 
   void write_brightness(string param) {
@@ -148,13 +146,14 @@ void battery_fn(data_pack *shared_state) {
 
 void my_time_fn(data_pack *shared_state) {
   try {
-    for(;shared_state->are_we_still_going();sleep_for(1s)){
-    time_t now = time(0);
-    struct tm tstruct;
-    char buf[80];
-    tstruct = *localtime(&now);
-    strftime(buf, sizeof(buf), "%Y-%m-%d.%X", &tstruct);
-    shared_state->write_my_time(buf);}
+    for (; shared_state->are_we_still_going(); sleep_for(1s)) {
+      time_t now = time(0);
+      struct tm tstruct;
+      char buf[80];
+      tstruct = *localtime(&now);
+      strftime(buf, sizeof(buf), "%Y-%m-%d.%X", &tstruct);
+      shared_state->write_my_time(buf);
+    }
 
   } catch (...) {
     dbg(true, 0, "my_time thread caught unknown exception, terminating");
@@ -170,8 +169,7 @@ void brightness_fn(data_pack *shared_state) {
     vector<path> paths_to_config_files = backlight::default_paths;
     for (; shared_state->are_we_still_going(); sleep_for(500ms)) {
       for (auto config_file : paths_to_config_files) {
-        vector<path> devices =
-            get_backlights_from_config_file(config_file);
+        vector<path> devices = get_backlights_from_config_file(config_file);
         for (auto device : devices) {
           float how_bright =
               backlight::get_current_brightness_percentage(device);

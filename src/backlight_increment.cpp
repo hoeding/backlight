@@ -1,8 +1,8 @@
 #include "backlight.hpp"
-#include <filesystem>
 #include "logging.hpp"
-#include "utility.hpp"
 #include "parse_arguments.hpp"
+#include "utility.hpp"
+#include <filesystem>
 #include <vector>
 
 using std::vector;

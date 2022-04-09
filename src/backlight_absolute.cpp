@@ -14,9 +14,9 @@ using namespace backlight;
 
 /** @brief Single argument increments/decrements current brightness by N% */
 int main(const int argc, const char *argv[]) {
-  #ifndef NDEBUG
+#ifndef NDEBUG
   dbg(true, 0, "backlight-absolute version VERSION");
-  #endif
+#endif
   int percentage = arguments::parse_args(argc, argv);
   /** builtin search paths */
   vector<path> paths_to_config_files{{"/etc/backlight/config"}};
@@ -26,8 +26,7 @@ int main(const int argc, const char *argv[]) {
   dbg(true, 0, "", paths_to_config_files);
 #endif
   for (auto config_file : paths_to_config_files) {
-    vector<path> devices =
-        get_backlights_from_config_file(config_file);
+    vector<path> devices = get_backlights_from_config_file(config_file);
     for (auto device : devices) {
       adjust_brightness_to_target_percentage(device, percentage);
     }

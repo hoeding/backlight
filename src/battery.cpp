@@ -13,8 +13,8 @@ using namespace logging;
 using namespace utility;
 
 /** @brief print battery level every N  */
-int main([[maybe_unused]]const int argc, [[maybe_unused]] const char *argv[]) {
-  #ifndef NDEBUG
+int main([[maybe_unused]] const int argc, [[maybe_unused]] const char *argv[]) {
+#ifndef NDEBUG
   dbg(true, 0, " version PROJECT_VERSION");
 #endif
 

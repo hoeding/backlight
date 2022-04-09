@@ -12,7 +12,7 @@ using namespace logging;
 using namespace utility;
 
 /** @brief Single argument increments/decrements current brightness by N% */
-int main([[maybe_unused]]const int argc, [[maybe_unused]] const char *argv[]) {
+int main([[maybe_unused]] const int argc, [[maybe_unused]] const char *argv[]) {
 
   /* Configuration variables, TODO: make configurable */
 
@@ -45,9 +45,10 @@ int main([[maybe_unused]]const int argc, [[maybe_unused]] const char *argv[]) {
 
   /* */
 
-  #ifndef NDEBUG
-  dbg(true, 0, "Debug - valid_paths", valid_paths); dbg(true, 0);
-  #endif
+#ifndef NDEBUG
+  dbg(true, 0, "Debug - valid_paths", valid_paths);
+  dbg(true, 0);
+#endif
   if (all_users) {
     // install to /etc/backlight/config
   };

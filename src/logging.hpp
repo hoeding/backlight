@@ -1,19 +1,18 @@
 #ifndef BACKLIGHT_LOGGING_HPP
 #define BACKLIGHT_LOGGING_HPP
-#include <bitset>
 #include "concepts.hpp"
+#include <bitset>
 #include <filesystem>
 #include <iomanip>
 #include <iostream>
 #include <stdexcept>
-#include <vector>
 #include <type_traits>
-
+#include <vector>
 
 namespace logging {
 using namespace std;
-using std::filesystem::path;
 using concepts::printable;
+using std::filesystem::path;
 
 /*
 
@@ -51,9 +50,6 @@ priority_enum operator and (priority_enum lhs, priority_enum rhs){
 
 */
 
-
-
-
 void header(const bool newLine, const int tabs) {
   if (tabs < 0)
     exit(EXIT_FAILURE);
@@ -64,8 +60,8 @@ void header(const bool newLine, const int tabs) {
   }
 }
 template <printable T>
-void dbg( const bool &newLine, const int &tabs,
-         const string &description, const T data) {
+void dbg(const bool &newLine, const int &tabs, const string &description,
+         const T data) {
   header(newLine, tabs);
   try {
     cout << description << std::fixed << std::setprecision(13) << data << flush;
@@ -77,12 +73,13 @@ void dbg(const bool &newLine, const int &tabs, const string &description) {
   header(newLine, tabs);
   cout << description << flush;
 };
-void dbg(const bool &newLine, const int &tabs ) {
-  header(newLine,tabs);
+void dbg(const bool &newLine, const int &tabs) {
+  header(newLine, tabs);
   cout << flush;
 };
- template <printable T>
-void dbg(const bool &newLine, const int &tabs, const string &description, const vector<T> data) {
+template <printable T>
+void dbg(const bool &newLine, const int &tabs, const string &description,
+         const vector<T> data) {
   dbg(newLine, tabs, description);
   for (T datum : data) {
     dbg(true, 1, "", datum);

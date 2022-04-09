@@ -1,13 +1,13 @@
 #ifndef BACKLIGHT_CONCEPTS_HPP
 #define BACKLIGHT_CONCEPTS_HPP
-#include <iostream>
 #include <concepts>
+#include <cstdio>
 #include <filesystem>
 #include <fstream>
-#include <cstdio>
+#include <iostream>
 namespace concepts {
-  using namespace std;
-  using std::filesystem::path;
+using namespace std;
+using std::filesystem::path;
 template <class T>
 concept printable = requires(T a) {
   cout << a;
