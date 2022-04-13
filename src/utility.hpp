@@ -95,6 +95,31 @@ void to_string_sigfigures (T value, string stringy, int left, int right) {
   to_chars(stringy.data(), stringy.data() + char_count, value, chars_format::fixed, 3);
 }
 } // namespace utility
-#endif
 
-// to_chars( char* first, char* last, float value, std::chars_format fmt, int precision );
+namespace arguments {
+using namespace std;
+using logging::dbg;
+
+/** @brief Safely handle arguments. Will either return through
+ * parameter (-100,100) or terminate*/
+int args_to_plus_minus_100_percent(const int &argc, const char *argv[]) {
+  if (argc != 2) {
+    dbg(false, 0, "Incorrect number of arguments\n");
+    exit(EXIT_FAILURE);
+  }
+  int adjustment;
+  try {
+    adjustment = stoi(argv[1]);
+  } catch (...) {
+    dbg(true, 0, "Unhandled exception converting to integer");
+    exit(EXIT_FAILURE);
+  };
+  if ((adjustment < -100) or (adjustment > 100)) {
+    dbg(true, 0, "Valid inputs are -100 to 100 inclusive");
+    exit(EXIT_FAILURE);
+  }
+  return adjustment;
+}
+
+} // namespace arguments
+#endif
