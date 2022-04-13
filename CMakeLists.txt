@@ -9,6 +9,7 @@ include (GNUInstallDirs)
 find_package(Threads REQUIRED)
 option(BIG_WARN "Use strict compiler flags" ON)
 configure_file(src/version.hpp.in project_version.hpp)
+configure_file(src/GNUInstallDirs.hpp.in GNUInstallDirs.hpp)
 include_directories(${CMAKE_CURRENT_BINARY_DIR})
 
 add_executable( bli

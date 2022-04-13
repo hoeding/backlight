@@ -1,0 +1,54 @@
+#define PROJECT_VERSION "@PROJECT_VERSION@"
+
+
+#define GNU_BINDIR "@CMAKE_BINDIR@"
+
+  //  user executables (bin)
+#define SBINDIR "@CMAKE_SBINDIR@"
+
+  //  system admin executables (sbin)
+#define LIBEXECDIR "@CMAKE_LIBEXECDIR@"
+
+  //   program executables (libexec)
+#define SYSCONFDIR "@CMAKE_SYSCONFDIR@"
+
+  //    read-only single-machine data (etc)
+#define SHAREDSTATEDIR "@CMAKE_@SHAREDSTATEDIR"
+
+  //   modifiable architecture-independent data (com)
+#define LOCALSTATEDIR "@CMAKE_@LOCALSTATEDIR"
+
+  //    modifiable single-machine data (var)
+#define RUNSTATEDIR "@CMAKE_@RUNSTATEDIR"
+
+  //  New in version 3.9: run-time variable data (LOCALSTATEDIR/run)
+#define LIBDIR "@CMAKE_@LIBDIR"
+
+  //    object code libraries (lib or lib64)
+
+  //   On Debian, this may be lib/<multiarch-tuple> when CMAKE_INSTALL_PREFIX is
+  //   /, /usr, or /usr/local.
+#define INCLUDEDIR "@CMAKE_@INCLUDEDIR"
+
+  //  C header files (include)
+#define OLDINCLUDEDIR "@CMAKE_@OLDINCLUDEDIR"
+
+  //   C header files for non-gcc (/usr/include)
+#define DATAROOTDIR "@CMAKE_@DATAROOTDIR"
+
+  //   read-only architecture-independent data root (share)
+#define DATADIR "@CMAKE_@DATADIR"
+
+  //    read-only architecture-independent data (DATAROOTDIR)
+#define INFODIR "@CMAKE_@INFODIR"
+
+  //    info documentation (DATAROOTDIR/info)
+#define LOCALEDIR "@CMAKE_@LOCALEDIR"
+
+  //    locale-dependent data (DATAROOTDIR/locale)
+#define MANDIR "@CMAKE_@MANDIR"
+
+  //   man documentation (DATAROOTDIR/man)
+#define DOCDIR "@CMAKE_@DOCDIR"
+
+  //   documentation root (DATAROOTDIR/doc/PROJECT_NAME)

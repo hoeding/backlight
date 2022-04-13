@@ -17,7 +17,7 @@ int main(const int argc, const char *argv[]) {
 #ifndef NDEBUG
   dbg(true, 0, "backlight-absolute version VERSION");
 #endif
-  int percentage = arguments::parse_args(argc, argv);
+  int percentage = arguments::args_to_plus_minus_100_percent(argc, argv);
   /** builtin search paths */
   vector<path> paths_to_config_files{{"/etc/backlight/config"}};
   paths_to_config_files.push_back(backlight::get_xdg_config_path());
