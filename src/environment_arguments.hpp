@@ -2,11 +2,16 @@
 #define ENVIRONMENT_ARGUMENTS_HPP
 
 #include <GNUInstallDirs.hpp>
+#include <type_traits>
+#include <concepts>
+#include <string>
+#include <vector>
+#include <filesystem>
 
 namespace NOT_YET_NAMED {
 using std::is_same;
 using std::underlying_type_t;
-
+using std::filesystem::path;
 /* very thin wrappers to get distinct types */
 class short_opt : public std::string {};
 class long_opt : public std::string {};
@@ -33,20 +38,18 @@ enum class flags_e : uint8_t {
   error         = 0b1000,
   help          = 0b10000
 };
-
-
 template <class T>
 concept pointy_boi = (std::is_pointer<T>::value);
 
-class parameter_pack{
+class arg_env_parameter_pack{
 
   public: /* constructors */
   template<pointy_boi Ta>
-  parameter_pack (int const &argc_, const Ta argv_) {
+  arg_env_parameter_pack (int const &argc_, const Ta argv_) {
     add(argc_, argv_);
   }
   template<pointy_boi Ta, pointy_boi Tb>
-  parameter_pack (int const &argc_, Ta const argv_, Tb const envp_) {
+  arg_env_parameter_pack (int const &argc_, Ta const argv_, Tb const envp_) {
     add(argc_, argv_, envp_);
   }
 
@@ -149,6 +152,7 @@ private:
   //param_t param_value;
   T datum;
 };
+//extern template class option_pack<bool>;
 template <class Ta>
 concept options_manager_constructable = (
   std::is_same_v<Ta, option_pack<bool>> or
@@ -156,7 +160,7 @@ concept options_manager_constructable = (
   std::is_same_v<Ta, option_pack<path>> or
   std::is_same_v<Ta, option_pack<float>> or
   std::is_same_v<Ta, option_pack<no_parsing>> or
-  std::is_same_v<Ta, parameter_pack>
+  std::is_same_v<Ta, arg_env_parameter_pack>
 );
 
 class options_manager {
@@ -176,7 +180,7 @@ public:
     return "/dev/null";
   }
 protected:
-  void add([[maybe_unused]] parameter_pack value) {};
+  void add([[maybe_unused]] arg_env_parameter_pack value) {};
   template <supported_parsing_return_types T_return>
   void add([[maybe_unused]] option_pack<T_return> value){/*respect order */}
 
@@ -191,7 +195,7 @@ protected:
 }
 
  // namespace NOT_YET_NAMED
-
+/*
 namespace environment_variables {
 
 class state {
@@ -232,5 +236,5 @@ std::vector<std::filesystem::path> env_path() {
   return paths;
 };
 } // namespace environment_variables
-
+*/
 #endif

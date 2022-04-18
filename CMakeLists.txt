@@ -82,7 +82,10 @@ add_executable( bla
         RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
 )
 add_executable( bl-scanner 
-       src/generate_config_file.cpp)
+       src/bl_scanner.cpp
+       )
+    target_link_libraries( bl-scanner
+        PRIVATE env-arg-parser)
     set_target_properties( bl-scanner
         PROPERTIES
         CXX_STANDARD 20
