@@ -17,41 +17,39 @@ using namespace NOT_YET_NAMED;
 int main([[maybe_unused]] const int argc, [[maybe_unused]] const char *argv[], [[maybe_unused]] const char * envp[]) {
 
 /* Configuration variables, TODO: make configurable */
-option_pack verbose {
+option_pack<bool> verbose {
   short_opt{"v"}, 
   long_opt{"verbose"}, 
   help_t{"loquacious output, useful for debugging"}
 };
-option_pack all_users {
-  short_opt{"a"},
-  long_opt{"all_users"},
-  help_t{"Write the generated config file to default location (SHAREDSTATEDIR)"},
-  style_e::string_e
-};
-option_pack current_user {
+option_pack<bool> all_users{
+    short_opt{"a"}, long_opt{"all_users"},
+    help_t{"Write the generated config to default location (SHAREDSTATEDIR)"},
+ };
+option_pack<bool> current_user {
   short_opt{"c"},
   long_opt{"current_user"},
   help_t{"optional long option description"},
-  style_e::string_e
 };
-option_pack by_path {
+option_pack <path> by_path{
   short_opt{"p"},
   long_opt{"output-path"},
   help_t{"path to write generated configuration"},
-  style_e::string_e
 };
-option_pack help{
+option_pack<no_parsing> help{
   short_opt{"h"},
   long_opt{"help"},
   help_t{"long form help description"},
   flags_e::error,
-  style_e::bool_e
 };
-parameter_pack arg_env { argc, argv, envp
+parameter_pack arg_env { 
+  argc, argv, 
+  envp
 };
 
-options_manager opt{
-  arg_env, verbose, all_users, current_user, help
+[[maybe_unused]] options_manager opt{
+  arg_env, 
+  verbose, all_users, current_user, by_path, help
 };
 
 
@@ -85,15 +83,16 @@ if (exists(backlight_path) and is_directory(backlight_path)) {
   dbg(true, 0, "Debug - valid_paths", valid_paths);
   dbg(true, 0);
 #endif
-  if (all_users.is_it_true()) {
+  if (opt.is_it_true(all_users)) {
     // install to /etc/backlight/config
   };
 
-  if (current_user.is_it_true()) {
+  if (opt.is_it_true(current_user)) {
     // install to XDG config dir "~/.config/backlight/config"
   };
 
-  if (by_path.is_it_true()) {
+  if (opt.is_it_true(by_path)) {
+    [[maybe_unused]] path parsed_path = opt.get_path(by_path);
     // install to given file
   }
 

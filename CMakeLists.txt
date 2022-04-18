@@ -92,7 +92,7 @@ add_executable( bl-scanner
         PRIVATE VERSION=${PROJECT_VERSION})
     if (BIG_WARN)
         target_compile_options( bl-scanner
-            PRIVATE -Wall -Wextra -pedantic -Werror )
+            PRIVATE -Wall -Wextra -pedantic -Werror -fconcepts-diagnostics-depth=5)
     endif( BIG_WARN)
     target_link_libraries(bl-scanner backlight)
     install(TARGETS bl-scanner

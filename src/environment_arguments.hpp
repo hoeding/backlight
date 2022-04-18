@@ -5,29 +5,33 @@
 
 namespace NOT_YET_NAMED {
 using std::is_same;
+using std::underlying_type_t;
 
+/* very thin wrappers to get distinct types */
 class short_opt : public std::string {};
 class long_opt : public std::string {};
 class help_t : public std::string {};
 class param_t : public std::string {};
-using success = bool;
+//using success = bool;
 using std::vector;
+using std::string;
+using std::filesystem::path;
 
 enum class style_e : uint8_t { 
-  none =      0b0, 
-  bool_e =    0b1, 
-  string_e =  0b10, 
-  int_e =     0b100,
-  float_e =   0b1000
+  none      = 0b0, 
+  bool_e    = 0b1, 
+  string_e  = 0b10, 
+  int_e     = 0b100,
+  float_e   = 0b1000
 };
 
 enum class flags_e : uint8_t {
-  none =          0b0,
-  no_arg =        0b1,
-  optional_arg =  0b10,
+  none          = 0b0,
+  no_arg        = 0b1,
+  optional_arg  = 0b10,
   mandatory_arg = 0b100,
-  error =         0b1000,
-  help =          0b10000
+  error         = 0b1000,
+  help          = 0b10000
 };
 
 
@@ -90,47 +94,69 @@ private:
   char **envp = nullptr;
 };
 
+class no_parsing {};
+
 template <class T>
-concept option_pack_constructable =
-    (is_same<T, short_opt>::value or is_same<T, long_opt>::value or
-     is_same<T, help_t>::value or is_same<T, param_t>::value or
-     is_same<T, style_e>::value or is_same<T, flags_e>::value
+concept option_pack_constructable = (
+  is_same<T, short_opt>::value or
+  is_same<T, long_opt>::value or
+  is_same<T, help_t>::value or
+  is_same<T, param_t>::value or
+  is_same<T, style_e>::value or
+  is_same<T, flags_e>::value
 );
+
+template <class T>
+concept supported_parsing_return_types = (
+  std::is_same_v<T, string> or
+  std::is_same_v<T, no_parsing> or
+  std::is_same_v<T, bool> or
+  std::is_same_v<T, int> or
+  std::is_same_v<T, float> or
+  std::is_same_v<T, path>
+);
+
+
+
+template <supported_parsing_return_types T>
 class option_pack {
 public:
-  template <option_pack_constructable T, option_pack_constructable... Ts>
-  option_pack(T const &first, Ts const &...rest) {
+  template <option_pack_constructable T_T, option_pack_constructable... Ts>
+  option_pack(T_T const &first, Ts const &...rest) {
+    add(first);
+    if constexpr (sizeof...(rest) > 0) {
+      add(rest...);
+    }
+  }
+  template <option_pack_constructable T_T, option_pack_constructable... Ts>
+  void add(T_T const &first, Ts const &...rest) {
     add(first);
     if constexpr (sizeof...(rest) > 0) {
       add(rest...);
     }
   }
 
-  template <option_pack_constructable T, option_pack_constructable... Ts>
-  void add(T const &first, Ts const &...rest) {
-    add(first);
-    if constexpr (sizeof...(rest) > 0) {
-      add(rest...);
-    }
-  }
-  bool is_it_true() {return true;};
 
 protected:
   void add(long_opt value) { long_opts.emplace_back(value); }
   void add(help_t value) { help_text = value; }
-  void add(param_t value) { param_value = value; }
+  void add(T value) { datum = value; }
 
 private:
-  vector<short_opt> short_opts;
-  vector<long_opt> long_opts;
-  help_t help_text;
-  param_t param_value;
+  vector<short_opt> short_opts{};
+  vector<long_opt> long_opts{};
+  help_t help_text{};
+  //param_t param_value;
+  T datum;
 };
-
-template <class T>
+template <class Ta>
 concept options_manager_constructable = (
-  std::is_same<T, option_pack>::value or
-  std::is_same<T, parameter_pack>::value
+  std::is_same_v<Ta, option_pack<bool>> or
+  std::is_same_v<Ta, option_pack<int>> or
+  std::is_same_v<Ta, option_pack<path>> or
+  std::is_same_v<Ta, option_pack<float>> or
+  std::is_same_v<Ta, option_pack<no_parsing>> or
+  std::is_same_v<Ta, parameter_pack>
 );
 
 class options_manager {
@@ -143,17 +169,25 @@ public:
       add(rest...);
     }
   }
-  protected:
+  bool is_it_true([[maybe_unused]] auto option_pack) {
+    return true;
+  }
+  path get_path([[maybe_unused]] auto option_pack) { 
+    return "/dev/null";
+  }
+protected:
   void add([[maybe_unused]] parameter_pack value) {};
-  void add([[maybe_unused]] option_pack value) { /*respect order */};
-  template<options_manager_constructable T, options_manager_constructable... Ts>
-  void add([[maybe_unused]] T const &first, Ts const &...rest){
+  template <supported_parsing_return_types T_return>
+  void add([[maybe_unused]] option_pack<T_return> value){/*respect order */}
+
+  template<options_manager_constructable Ta, options_manager_constructable... Ts>
+  void add([[maybe_unused]] Ta const &first, Ts const &...rest){
     add(first);
     if constexpr (sizeof...(rest) > 0) {
       add(rest...);
     }
   }
-  };
+};
 }
 
  // namespace NOT_YET_NAMED
