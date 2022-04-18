@@ -12,6 +12,24 @@ configure_file(src/version.hpp.in project_version.hpp)
 configure_file(src/GNUInstallDirs.hpp.in GNUInstallDirs.hpp)
 include_directories(${CMAKE_CURRENT_BINARY_DIR})
 
+add_library (env-arg-parser
+        src/environment_arguments.cpp)
+
+    set_target_properties(env-arg-parser
+        PROPERTIES
+        CXX_STANDARD 20
+        CXX_STANDARD_REQUIRED YES
+        VERSION ${PROJECT_VERSION}
+        SOVERSION 1)
+    target_compile_definitions (env-arg-parser
+        PRIVATE VERSION=${PROJECT_VERSION})
+    if (BIG_WARN)
+        target_compile_options( env-arg-parser
+            PRIVATE -Wall -Wextra -pedantic -Werror -fconcepts-diagnostics-depth=5)
+    endif(BIG_WARN)
+    install(TARGETS env-arg-parser
+        LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
+)
 add_executable( bli
         src/backlight_increment.cpp)
     set_target_properties(bli
@@ -61,7 +79,10 @@ add_executable( bla
         RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
 )
 add_executable( bl-scanner 
-       src/generate_config_file.cpp)
+       src/bl_scanner.cpp
+       )
+    target_link_libraries( bl-scanner
+        PRIVATE env-arg-parser)
     set_target_properties( bl-scanner
         PROPERTIES
         CXX_STANDARD 20
