@@ -79,7 +79,7 @@ void dbg(const bool &newLine, const int &tabs) {
 };
 template <printable T>
 void dbg(const bool &newLine, const int &tabs, const string &description,
-         const vector<T> data) {
+         const vector<T> &data) {
   dbg(newLine, tabs, description);
   for (T datum : data) {
     dbg(true, 1, "", datum);

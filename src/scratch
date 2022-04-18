@@ -1,14 +1,3 @@
-
-
-
-
-
-
-
-
-
-
-
 namespace configuration {
 using size_type = std::string::size_type;
 const size_type npos = std::string::npos;

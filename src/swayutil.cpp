@@ -60,7 +60,7 @@ public:
     my_time_mtx.unlock();
     return returner;
   };
-  void write_my_time(string param) {
+  void write_my_time(const string &param) {
     my_time_mtx.lock();
     my_time = param;
     update();
@@ -83,7 +83,7 @@ public:
     return returner;
   };
 
-  void write_brightness(string param) {
+  void write_brightness(const string &param) {
     brightness_mtx.lock();
     brightness = param;
     update();
