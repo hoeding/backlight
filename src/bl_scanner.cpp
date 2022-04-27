@@ -15,45 +15,49 @@ using namespace logging;
 using namespace utility;
 using namespace NOT_YET_NAMED;
 
-/** @brief Single argument increments/decrements current brightness by N% */
+//#define ENV_ARG_USE_ENV
+/** @brief*/
 int main([[maybe_unused]] const int argc, [[maybe_unused]] const char *argv[], [[maybe_unused]] const char * envp[]) {
 
-
-  option_pack<bool> verbose {
-    short_opt{"v"},
+  option_pack<bool> verbose 
+  { short_opt{"v"},
     long_opt{"verbose"},
     help_t{"loquacious output, useful for debugging"}
-    };
-  option_pack<bool> all_users{
-      short_opt{"a"},
-      long_opt{"all_users"},
-      help_t{"Write the generated config to default location (SHAREDSTATEDIR)"},
   };
-  option_pack<bool> current_user{
-      short_opt{"c"},
-      long_opt{"current_user"},
-      help_t{"optional long option description"},
+  option_pack<bool> all_users 
+  { short_opt{"a"},
+    long_opt{"all_users"},
+    help_t{"Write the generated config to default location (SHAREDSTATEDIR)"}
   };
-  option_pack<path> by_path{
-      short_opt{"p"},
-      long_opt{"output-path"},
-      help_t{"path to write generated configuration"},
+  option_pack<bool> current_user
+  { short_opt{"c"},
+    long_opt{"current_user"},
+    help_t{"optional long option description"}
   };
-  option_pack<no_parsing> help{
-      short_opt{"h"},
-      long_opt{"help"},
-      help_t{"long form help description"},
-      flags_e::error,
+  option_pack<path> by_path 
+  { short_opt{"p"},
+    long_opt{"output-path"},
+    help_t{"path to write generated configuration"
+#ifdef ENV_ARG_USE_ENV
+  , environ_t { "TEST_ENV_VAR_FOO", seperator{" "}, seperator{","}, seperator{{" "},{":"}} }
+  , flags_e::concatenate_env
+#endif
+   }
   };
-  arg_env_parameter_pack arg_env{
-    argc, argv,
-    envp
-    };
+  option_pack<no_parsing> help 
+  { short_opt{"h"},
+    long_opt{"help"},
+    help_t{"long form help description"},
+    flags_e::error
+  };
+  arg_env_parameter_pack arg_env 
+  { argc, argv, envp 
+  };
 
   [[maybe_unused]] options_manager opt{
     arg_env,
     verbose, all_users, current_user, by_path, help
-    };
+  };
 
   /* Look through the entries in /sys/class/backlight and find all supported
    * devices */
@@ -81,16 +85,16 @@ int main([[maybe_unused]] const int argc, [[maybe_unused]] const char *argv[], [
   dbg(true, 0, "Debug - valid_paths", valid_paths);
   dbg(true, 0);
 #endif
-  if (opt.is_it_true(all_users)) {
+  if (all_users) {
     // install to /etc/backlight/config
   };
 
-  if (opt.is_it_true(current_user)) {
+  if (current_user) {
     // install to XDG config dir "~/.config/backlight/config"
   };
 
-  if (opt.is_it_true(by_path)) {
-    [[maybe_unused]] path parsed_path = opt.get_path(by_path);
+  if (by_path) {
+    [[maybe_unused]] path parsed_path = by_path;
     // install to given file
   }
 

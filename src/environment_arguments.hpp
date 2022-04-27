@@ -38,6 +38,12 @@ enum class flags_e : uint8_t {
   error         = 0b1000,
   help          = 0b10000
 };
+
+flags_e operator | (const flags_e &lhs, const flags_e &rhs) {
+  return static_cast<flags_e>(
+    (static_cast<underlying_type_t<flags_e>> (lhs) or static_cast<underlying_type_t<flags_e>> (rhs))
+  );
+}
 template <class T>
 concept pointy_boi = (std::is_pointer<T>::value);
 
@@ -79,15 +85,15 @@ class arg_env_parameter_pack{
       add(rest...);
     }
   }
-  void add(int argc_, char **argv_) { // Construct using arguments only
+  void add(int argc_, char **argv_) {
     argc = argc_;
     argv = argv_;
   }
-  void add(char **envp_) { // Construct using environment only
+  void add(char **envp_) {
     envp = envp_;
   };
   void add(int argc_, char **argv_,
-           char **envp_) { // Construct using arguments and environment
+           char **envp_) {
     add(argc_, argv_);
     add(envp_);
   };
@@ -116,7 +122,8 @@ concept supported_parsing_return_types = (
   std::is_same_v<T, bool> or
   std::is_same_v<T, int> or
   std::is_same_v<T, float> or
-  std::is_same_v<T, path>
+  std::is_same_v<T, path> or
+  std::is_same_v<T, void>
 );
 
 
@@ -139,16 +146,27 @@ public:
     }
   }
 
-
+  explicit operator T() const requires(std::is_same_v<T, bool>) {
+    return datum;
+  }
+  explicit operator T() const requires(std::is_same_v<T, path>) {
+    return datum.empty() ? false : true;
+  }
 protected:
   void add(long_opt value) { long_opts.emplace_back(value); }
   void add(help_t value) { help_text = value; }
-  void add(T value) { datum = value; }
+  void add(short_opt value) { short_opts.emplace_back(value); }
+  void add(no_parsing ) { /*no op */ ; }
+  void add(flags_e value ) { flags = flags | value; }
+#ifdef ENV_ARGS_USE_ENV
+  void add(environ_t value ) {}
+#endif
 
 private:
   vector<short_opt> short_opts{};
   vector<long_opt> long_opts{};
   help_t help_text{};
+  flags_e flags{};
   //param_t param_value;
   T datum;
 };
@@ -173,12 +191,15 @@ public:
       add(rest...);
     }
   }
+  /*
   bool is_it_true([[maybe_unused]] auto option_pack) {
     return true;
   }
   path get_path([[maybe_unused]] auto option_pack) { 
     return "/dev/null";
   }
+  */
+
 protected:
   void add([[maybe_unused]] arg_env_parameter_pack value) {};
   template <supported_parsing_return_types T_return>
