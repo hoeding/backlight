@@ -146,12 +146,26 @@ public:
     }
   }
 
-  explicit operator T() const requires(std::is_same_v<T, bool>) {
+  explicit operator bool() const requires(std::is_same_v<T, bool>) {
     return datum;
   }
-  explicit operator T() const requires(std::is_same_v<T, path>) {
-    return datum.empty() ? false : true;
+  explicit operator bool() const requires(std::is_same_v<T, path>) {
+   /* bool returner;
+    if (datum.empty()){
+      returner = false;
+    }
+    returner = true;
+    return returner;
+    */
+    return (datum.empty() ? false : true );
   }
+  explicit operator vector<path>() const requires(std::is_same_v<T, vector<path>>) {
+    return vector<path> {{"/dev/null"}};
+  }
+  explicit operator path() const requires(std::is_same_v<T, path>) {
+    return path {"/dev/null"};
+  }
+
 protected:
   void add(long_opt value) { long_opts.emplace_back(value); }
   void add(help_t value) { help_text = value; }
