@@ -93,8 +93,7 @@ int main([[maybe_unused]] const int argc, [[maybe_unused]] const char *argv[], [
     // install to XDG config dir "~/.config/backlight/config"
   };
 
-  if (by_path) {
-    [[maybe_unused]] path parsed_path = by_path;
+  if (by_path) {path parsed_path = by_path;
     // install to given file
   }
 
