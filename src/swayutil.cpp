@@ -3,6 +3,7 @@
 #include "utility.hpp"
 #include <chrono>
 #include <ctime>
+#include <cmath>
 #include <memory>
 #include <mutex>
 #include <project_version.hpp>
@@ -127,16 +128,20 @@ void battery_fn(data_pack *shared_state) {
     cerr << "battery_fn called\n" << flush;
     string old_str{""};
     string new_str{""};
-    for (; shared_state->are_we_still_going(); sleep_for(4000ms)) {
-
-      new_str = to_string(ez_pct(
-          get_int_from_file("/sys/class/power_supply/BAT0/charge_now"),
-          get_int_from_file("/sys/class/power_supply/BAT0/charge_full")));
-      if (old_str.compare(new_str) != 0) {
+    float val;
+     for (; shared_state->are_we_still_going(); sleep_for(4000ms)) {
+      val = ez_pct( get_int_from_file("/sys/class/power_supply/BAT0/charge_now"), get_int_from_file("/sys/class/power_supply/BAT0/charge_full"));
+      if (std::isnormal(val)) { 
+      new_str = to_string(val);
+       if (old_str.compare(new_str) != 0) {
         old_str = new_str;
         shared_state->swap_battery(new_str);
       }
       new_str.clear();
+    } else {
+      new_str.clear();
+      shared_state->swap_battery(new_str);
+    }
     };
   } catch (...) {
     dbg(true, 0, "Battery thread caught unknown exception, terminating");
@@ -144,15 +149,47 @@ void battery_fn(data_pack *shared_state) {
   }
 };
 
+std::array<string, 12> months = {
+  "Jan",
+  "Feb",
+  "Mar",
+  "Apr",
+  "May",
+  "June",
+  "July",
+  "Aug",
+  "Sept",
+  "Oct",
+  "Nov",
+  "Dec"
+};
+
+std::array<string, 7> days = {
+  "Sun",
+  "Mon",
+  "Tue",
+  "Wed",
+  "Thu",
+  "Fri",
+  "Sat"
+};
+
+string am_pm (int hour){
+  return ( (hour > 12 ) ? string{"PM"} : string{"AM"});
+}
 void my_time_fn(data_pack *shared_state) {
   try {
+    string formatted_time{};
     for (; shared_state->are_we_still_going(); sleep_for(1s)) {
       time_t now = time(0);
       struct tm tstruct;
-      char buf[80];
+     // char buf[80];
       tstruct = *localtime(&now);
-      strftime(buf, sizeof(buf), "%Y-%m-%d.%X", &tstruct);
-      shared_state->write_my_time(buf);
+      formatted_time = days.at(tstruct.tm_wday) + " " + to_string(1900 + tstruct.tm_year) + "-" + months.at(tstruct.tm_mon) + "-" + to_string(tstruct.tm_mday) + " " \
+      + to_string(tstruct.tm_hour % 12) + ":" + to_string(tstruct.tm_min) + ":" + to_string(tstruct.tm_sec) + " " + am_pm(tstruct.tm_hour);
+      shared_state->write_my_time(formatted_time);
+      //strftime(buf, sizeof(buf), "%Y-%m-%d.%X", &tstruct);
+      //shared_state->write_my_time(buf);
     }
 
   } catch (...) {
@@ -221,3 +258,24 @@ int main([[maybe_unused]] const int argc, [[maybe_unused]] const char *argv[]) {
   cerr << "Joining writer\n" << flush;
   writer.join();
 }
+
+/* ISO C `broken-down time' structure.  */
+//struct demo_tm {
+//  int tm_sec;   /* Seconds.     [0-60] (1 leap second) */
+//  int tm_min;   /* Minutes.     [0-59] */
+//  int tm_hour;  /* Hours.       [0-23] */
+//  int tm_mday;  /* Day.         [1-31] */
+//  int tm_mon;   /* Month.       [0-11] */
+//  int tm_year;  /* Year - 1900.  */
+//  int tm_wday;  /* Day of week. [0-6] */
+//  int tm_yday;  /* Days in year.[0-365] */
+//  int tm_isdst; /* DST.         [-1/0/1]*/
+
+//#ifdef __USE_MISC
+//  long int tm_gmtoff;  /* Seconds east of UTC.  */
+//  const char *tm_zone; /* Timezone abbreviation.  */
+//#else
+//  long int __tm_gmtoff;  /* Seconds east of UTC.  */
+//  const char *__tm_zone; /* Timezone abbreviation.  */
+//#endif
+//};
