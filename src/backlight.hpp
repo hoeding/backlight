@@ -6,16 +6,16 @@
 #include <stdexcept>
 
 namespace backlight {
+using namespace std;
+using namespace utility;
+using logging::dbg;
 using std::vector;
 using std::filesystem::path;
+namespace fs = std::filesystem;
 
 /** builtin search paths */
 const vector<path> default_paths{{"/etc/backlight/config"},
                                  {"/home/jeff/.config/backlight/config"}};
-using namespace std;
-using namespace utility;
-using logging::dbg;
-using std::filesystem::path;
 
 /** @brief Change brightness of device relative to current brightness
  * @param path sysfs path of device containing brightness knobs
@@ -95,21 +95,38 @@ auto get_current_brightness_percentage(const path device) {
   return utility::ez_pct(cur, max);
 }
 
+bool check_if_valid_device(const path device) {
+  if (fs::exists(device) and !fs::is_empty(device)) {
+    return true;
+  }
+  return false;
+}
 /** Scans through sysfs and returns full paths to valid devices */
 vector<path> get_backlights_from_config_file(path config) {
   vector<path> returner;
-  ifstream infile;
-  infile.open(config);
+  ifstream infile(config);
+  string empty, line = string{};
   while (infile.good()) {
-    string line;
     getline(infile, line);
-    if (line != string{}) {
+    if (line != empty) {
       line = "/sys/class/backlight/" + line;
       returner.push_back(line);
     }
+    line.clear();
   }
   return returner;
 }
 
+vector<path> scan_for_valid_backlights() {
+  vector<path> returner {};
+  path sysfs_backlight_root = "/sys/class/backlight";
+  if (fs::exists(sysfs_backlight_root)) {
+//
+  }
+  else {
+    //
+  }
+  return returner;
+}
 } // namespace backlight
 #endif
