@@ -25,7 +25,7 @@ float ez_pct(const Ta numerator, const Tb denominator) {
   return returner;
 };
 /* @brief  Attempt to get an integer from a file, always returns */
-int get_int_from_file(path path) noexcept {
+inline int get_int_from_file(path path) noexcept {
   try {
     ifstream infile;
     infile.open(path);
@@ -43,7 +43,7 @@ int get_int_from_file(path path) noexcept {
   }
 };
 
-void put_int_to_file(int i, path path) {
+inline void put_int_to_file(int i, path path) {
   try {
     ofstream outfile{path};
     outfile << i << endl;
@@ -51,7 +51,7 @@ void put_int_to_file(int i, path path) {
   } catch (...) { cerr << "Could not write " << i << " to " << path << endl; }
 }
 
-vector<string> filename_to_vector_of_strings(path filename) {
+inline vector<string> filename_to_vector_of_strings(path filename) {
   vector<string> returner{};
   // Open the File
   ifstream in(filename);
@@ -75,7 +75,7 @@ vector<string> filename_to_vector_of_strings(path filename) {
 }
 
 template <concepts::convertible_to_string T>
-void strings_to_file (T str, path filename) noexcept {
+inline void strings_to_file(T str, path filename) noexcept {
   try {
     ofstream out(filename);
     if (!out) {
@@ -90,13 +90,13 @@ void strings_to_file (T str, path filename) noexcept {
   };
 }
 template <concepts::convertible_to_string T>
-void strings_to_file(vector<T> vecOfStr, path filename) {
+inline void strings_to_file(vector<T> vecOfStr, path filename) {
   string big_string = accumulate(vecOfStr.begin(), vecOfStr.end(), string{});
   strings_to_file(big_string, filename);
 }
 
 template <concepts::convertible_to_string T>
-void strings_to_file_with_newline(vector<T> vecOfStr, path filename) {
+inline void strings_to_file_with_newline(vector<T> vecOfStr, path filename) {
   string big_string;
   for (T stringline : vecOfStr){
     big_string = big_string + (string)stringline + "\n";
