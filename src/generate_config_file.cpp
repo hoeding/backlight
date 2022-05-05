@@ -18,7 +18,6 @@ int main([[maybe_unused]] const int argc, [[maybe_unused]] const char *argv[]) {
 
   bool all_users = true;
   bool current_user = true;
-  bool by_path = true;
   path manual_path = "/dev/null";
 
   /* */
@@ -49,17 +48,18 @@ int main([[maybe_unused]] const int argc, [[maybe_unused]] const char *argv[]) {
   dbg(true, 0, "Debug - valid_paths", valid_paths);
   dbg(true, 0);
 #endif
+  vector<path> valid_devices {backlight::scan_for_valid_backlights()};
+  dbg(true, 0, "Discovered devices (valid_devices) -", valid_devices);
   if (all_users) {
+    strings_to_file_with_newline(valid_devices, "/etc/backlight/config");
     // install to /etc/backlight/config
   };
 
   if (current_user) {
+    strings_to_file_with_newline(valid_devices, backlight::get_xdg_config_path());
     // install to XDG config dir "~/.config/backlight/config"
   };
 
-  if (by_path) {
-    // install to given file
-  }
 
   return (EXIT_SUCCESS);
 }

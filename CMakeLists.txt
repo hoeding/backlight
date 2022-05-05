@@ -93,3 +93,6 @@ add_executable( swayutil
     install(TARGETS swayutil
        RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
 )
+
+add_executable( const_array_generator
+    tools/generate_consts.cpp)

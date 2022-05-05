@@ -1,6 +1,7 @@
 #ifndef BACKLIGHT_UTILITY_HPP
 #define BACKLIGHT_UTILITY_HPP
 #include "logging.hpp"
+#include "concepts.hpp"
 #include <concepts>
 #include <filesystem>
 #include <fstream>
@@ -73,20 +74,33 @@ vector<string> filename_to_vector_of_strings(path filename) {
   return returner;
 }
 
-void strings_to_file(string str, path filename) noexcept {
+template <concepts::convertible_to_string T>
+void strings_to_file (T str, path filename) noexcept {
   try {
     ofstream out(filename);
     if (!out) {
       dbg(true, 0, "Cannot open the File : ", filename);
       out.close();
     }
+    out << str;
+    out.close();
   } catch (...) {
     dbg(true, 0, "Unhandled exception writing:", str);
     dbg(false, 1, "to path:", filename);
   };
 }
-void strings_to_file(vector<string> vecOfStr, path filename) {
+template <concepts::convertible_to_string T>
+void strings_to_file(vector<T> vecOfStr, path filename) {
   string big_string = accumulate(vecOfStr.begin(), vecOfStr.end(), string{});
+  strings_to_file(big_string, filename);
+}
+
+template <concepts::convertible_to_string T>
+void strings_to_file_with_newline(vector<T> vecOfStr, path filename) {
+  string big_string;
+  for (T stringline : vecOfStr){
+    big_string = big_string + (string)stringline + "\n";
+  }
   strings_to_file(big_string, filename);
 }
 

@@ -163,8 +163,9 @@ const std::array<string, 24> hours =
 };
 
 string am_pm(int hour) {
-  return ( (hour >= 12 ) ? string{"PM"} : string{"AM"});
+  return ( (hour >= 12 ) ? "PM" : "AM");
 }
+
 void my_time_fn(data_pack *shared_state) {
   try {
     string formatted_time{};

@@ -95,13 +95,7 @@ auto get_current_brightness_percentage(const path device) {
   return utility::ez_pct(cur, max);
 }
 
-bool check_if_valid_device(const path device) {
-  if (fs::exists(device) and !fs::is_empty(device)) {
-    return true;
-  }
-  return false;
-}
-/** Scans through sysfs and returns full paths to valid devices */
+/** Loads device paths from config file*/
 vector<path> get_backlights_from_config_file(path config) {
   vector<path> returner;
   ifstream infile(config);
@@ -109,23 +103,26 @@ vector<path> get_backlights_from_config_file(path config) {
   while (infile.good()) {
     getline(infile, line);
     if (line != empty) {
-      line = "/sys/class/backlight/" + line;
       returner.push_back(line);
     }
     line.clear();
   }
   return returner;
 }
-
+/** Scans through sysfs and returns full paths to valid devices */
 vector<path> scan_for_valid_backlights() {
-  vector<path> returner {};
+  vector<path> returner{};
   path sysfs_backlight_root = "/sys/class/backlight";
-  if (fs::exists(sysfs_backlight_root)) {
-//
+  if (fs::exists(sysfs_backlight_root)) {  
+    for (path device_path : fs::directory_iterator(sysfs_backlight_root)) {
+      if (fs::exists(device_path / "max_brightness") and
+          fs::exists(device_path / "actual_brightness") and
+          fs::exists(device_path / "brightness")) {
+        returner.emplace_back(device_path);
+      }
+    }
   }
-  else {
-    //
-  }
+  dbg(true, 0, "scan_for_valid_backlights", returner);
   return returner;
 }
 } // namespace backlight
