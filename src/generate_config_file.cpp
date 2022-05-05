@@ -15,12 +15,9 @@ using namespace utility;
 int main([[maybe_unused]] const int argc, [[maybe_unused]] const char *argv[]) {
 
   /* Configuration variables, TODO: make configurable */
-
   bool all_users = true;
   bool current_user = true;
-  path manual_path = "/dev/null";
-
-
+  
   vector<path> valid_devices {backlight::scan_for_valid_backlights()};
   dbg(true, 0, "Discovered devices (valid_devices) -", valid_devices);
   if (all_users) {
@@ -32,7 +29,6 @@ int main([[maybe_unused]] const int argc, [[maybe_unused]] const char *argv[]) {
     strings_to_file_with_newline(valid_devices, backlight::get_xdg_config_path());
     // install to XDG config dir "~/.config/backlight/config"
   };
-
 
   return (EXIT_SUCCESS);
 }

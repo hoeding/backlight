@@ -222,7 +222,7 @@ void brightness_fn(data_pack *shared_state) {
     cerr << "brightness_fn called\n" << flush;
     string old_str{""};
     string new_str{""};
-    vector<path> paths_to_config_files = backlight::default_paths;
+    vector<path> paths_to_config_files = backlight::default_paths();
     for (; shared_state->are_we_still_going(); sleep_for(500ms)) {
       for (auto config_file : paths_to_config_files) {
         vector<path> devices = get_backlights_from_config_file(config_file);

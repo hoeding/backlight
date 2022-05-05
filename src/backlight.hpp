@@ -13,10 +13,6 @@ using std::vector;
 using std::filesystem::path;
 namespace fs = std::filesystem;
 
-/** builtin search paths */
-const vector<path> default_paths{{"/etc/backlight/config"},
-                                 {"/home/jeff/.config/backlight/config"}};
-
 /** @brief Change brightness of device relative to current brightness
  * @param path sysfs path of device containing brightness knobs
  * @param percentage increment/decrement */
@@ -86,6 +82,12 @@ path get_xdg_config_path() {
     xdg_config_dir = path{env_p} / ".config/backlight/config";
   }
   return xdg_config_dir;
+}
+
+vector<path> default_paths() {
+  vector<path> returner{{"/etc/backlight/config"}};
+  returner.push_back(backlight::get_xdg_config_path());
+  return returner;
 }
 /** takes a sysfs path to a backlight device and returns current brightness in
  * terms of percent of maximum brightess. */
