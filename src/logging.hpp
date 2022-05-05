@@ -50,7 +50,7 @@ priority_enum operator and (priority_enum lhs, priority_enum rhs){
 
 */
 
-void header(const bool newLine, const int tabs) {
+inline void header(const bool newLine, const int tabs) {
   if (tabs < 0)
     exit(EXIT_FAILURE);
   if (newLine)
@@ -60,7 +60,7 @@ void header(const bool newLine, const int tabs) {
   }
 }
 template <printable T>
-void dbg(const bool &newLine, const int &tabs, const string &description,
+inline void dbg(const bool &newLine, const int &tabs, const string &description,
          const T data) {
   header(newLine, tabs);
   try {
@@ -69,16 +69,16 @@ void dbg(const bool &newLine, const int &tabs, const string &description,
     cerr << "template dbg threw exception: " << e.what() << endl;
   }
 }
-void dbg(const bool &newLine, const int &tabs, const string &description) {
+inline void dbg(const bool &newLine, const int &tabs, const string &description) {
   header(newLine, tabs);
   cout << description << flush;
 };
-void dbg(const bool &newLine, const int &tabs) {
+inline void dbg(const bool &newLine, const int &tabs) {
   header(newLine, tabs);
   cout << flush;
 };
 template <printable T>
-void dbg(const bool &newLine, const int &tabs, const string &description,
+inline void dbg(const bool &newLine, const int &tabs, const string &description,
          const vector<T> data) {
   dbg(newLine, tabs, description);
   for (T datum : data) {

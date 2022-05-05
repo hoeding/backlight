@@ -14,11 +14,15 @@ using namespace backlight;
 /** @brief Single argument increments/decrements current brightness by N% */
 int main(const int argc, const char *argv[]) {
   int percentage = (-1) * arguments::parse_args(argc, argv);
-  vector<path> paths_to_config_files = default_paths();
-  for (auto config_file : paths_to_config_files) {
+  for (auto config_file : default_paths()) {
     vector<path> devices = get_backlights_from_config_file(config_file);
-    for (auto device : devices) {
-      backlight::adjust_brightness_by_increment(device, percentage);
+    if (devices.empty()) {
+      devices = scan_for_valid_backlights();
+    }
+    if (!devices.empty()) {
+      for (auto device : devices) {
+        backlight::adjust_brightness_by_increment(device, percentage);
+      }
     }
   }
   return (EXIT_SUCCESS);

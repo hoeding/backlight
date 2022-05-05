@@ -172,14 +172,11 @@ void my_time_fn(data_pack *shared_state) {
     for (; shared_state->are_we_still_going(); sleep_for(1s)) {
       time_t now = time(0);
       struct tm tstruct;
-     // char buf[80];
-      tstruct = *localtime(&now);
+          tstruct = *localtime(&now);
       formatted_time = days.at(tstruct.tm_wday) + " " + to_string(1900 + tstruct.tm_year) + "-" + months.at(tstruct.tm_mon) + "-" + to_string(tstruct.tm_mday) + " " \
       + to_string(tstruct.tm_hour % 12) + 
       ":" + mins_secs.at(tstruct.tm_min) + ":" + mins_secs.at(tstruct.tm_sec) + " " + am_pm(tstruct.tm_hour);
       shared_state->write_my_time(formatted_time);
-      //strftime(buf, sizeof(buf), "%Y-%m-%d.%X", &tstruct);
-      //shared_state->write_my_time(buf);
     }
 
   } catch (...) {
