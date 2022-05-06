@@ -8,6 +8,7 @@
 #include <iostream>
 #include <numeric>
 #include <vector>
+#include <charconv>
 
 namespace utility {
 using namespace std;
@@ -51,29 +52,6 @@ inline void put_int_to_file(int i, path path) {
   } catch (...) { cerr << "Could not write " << i << " to " << path << endl; }
 }
 
-inline vector<string> filename_to_vector_of_strings(path filename) {
-  vector<string> returner{};
-  // Open the File
-  ifstream in(filename);
-  string str;
-  // Check if object is valid
-  if (!in) {
-    dbg(true, 0, "Cannot open the File:", filename);
-  } else {
-    dbg(true, 0, "File opened:", filename);
-
-    // Read the next line from File untill it reaches the end.
-    while (getline(in, str)) {
-      // Line contains string of length > 0 then save it in vector
-      if (str.size() > 0)
-        returner.push_back(str);
-    }
-  }
-  // Close The File
-  in.close();
-  return returner;
-}
-
 template <concepts::convertible_to_string T>
 inline void strings_to_file(T str, path filename) noexcept {
   try {
@@ -99,10 +77,25 @@ template <concepts::convertible_to_string T>
 inline void strings_to_file_with_newline(vector<T> vecOfStr, path filename) {
   string big_string;
   for (T stringline : vecOfStr){
-    big_string = big_string + (string)stringline + "\n";
+    big_string.append((string)stringline + "\n");
   }
   strings_to_file(big_string, filename);
 }
 
+
+//TODO
+template<concepts::floatable T>
+void to_string_sigfigures (T value, string stringy, int left, int right) {
+  int char_count;
+  if (right > 0) {
+    char_count = right + left + 1; // decimal point
+  } else {
+    char_count = left;
+  }
+  stringy.reserve(char_count);
+  to_chars(stringy.data(), stringy.data() + char_count, value, chars_format::fixed, 3);
+}
 } // namespace utility
 #endif
+
+// to_chars( char* first, char* last, float value, std::chars_format fmt, int precision );

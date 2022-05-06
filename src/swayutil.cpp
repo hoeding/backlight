@@ -42,8 +42,8 @@ public:
   void swap_battery(string fresh_string) {
     battery_mtx.lock();
     battery.swap(fresh_string);
-    update();
     battery_mtx.unlock();
+    update();
   }
 
   string read_battery() {
@@ -61,22 +61,13 @@ public:
     my_time_mtx.unlock();
     return returner;
   };
-  void write_my_time(string param) {
+  void swap_my_time(string &param) {
     my_time_mtx.lock();
-    my_time = param;
-    update();
+    my_time.swap(param);
     my_time_mtx.unlock();
-  };
-
-  void swap_brightness(string fresh_string) {
-    brightness_mtx.lock();
-    brightness.swap(fresh_string);
     update();
-    brightness_mtx.unlock();
-  }
-
+  };
   string read_brightness() {
-
     string returner;
     brightness_mtx.lock_shared();
     returner = brightness;
@@ -84,11 +75,11 @@ public:
     return returner;
   };
 
-  void write_brightness(string param) {
+  void swap_brightness(string &param) {
     brightness_mtx.lock();
-    brightness = param;
-    update();
+    brightness.swap(param);
     brightness_mtx.unlock();
+    update();
   };
   void update() {
     if_true_we_have_updated_data_mtx.lock();
@@ -176,7 +167,7 @@ void my_time_fn(data_pack *shared_state) {
       formatted_time = days.at(tstruct.tm_wday) + " " + to_string(1900 + tstruct.tm_year) + "-" + months.at(tstruct.tm_mon) + "-" + to_string(tstruct.tm_mday) + " " \
       + to_string(tstruct.tm_hour % 12) + 
       ":" + mins_secs.at(tstruct.tm_min) + ":" + mins_secs.at(tstruct.tm_sec) + " " + am_pm(tstruct.tm_hour);
-      shared_state->write_my_time(formatted_time);
+      shared_state->swap_my_time(formatted_time);
     }
 
   } catch (...) {
@@ -190,8 +181,7 @@ void battery_fn(data_pack *shared_state) {
     cerr << "battery_fn called\n" << flush;
     string old_str{""};
     string new_str{""};
-    float val;
-    for (; shared_state->are_we_still_going(); sleep_for(4000ms)) {
+    for (float val; shared_state->are_we_still_going(); sleep_for(4000ms)) {
       val =
           ez_pct(get_int_from_file("/sys/class/power_supply/BAT0/charge_now"),
                  get_int_from_file("/sys/class/power_supply/BAT0/charge_full"));
@@ -217,7 +207,7 @@ void brightness_fn(data_pack *shared_state) {
   using namespace backlight;
   try {
     cerr << "brightness_fn called\n" << flush;
-    string old_str{""};
+    string old_str = shared_state->read_brightness();
     string new_str{""};
     vector<path> paths_to_config_files = backlight::default_paths();
     for (; shared_state->are_we_still_going(); sleep_for(500ms)) {
@@ -225,7 +215,7 @@ void brightness_fn(data_pack *shared_state) {
         vector<path> devices = get_backlights_from_config_file(config_file);
         for (auto device : devices) {
           float how_bright =
-           backlight::get_current_brightness_percentage(device);
+          backlight::get_current_brightness_percentage(device);
           new_str = new_str + " " + to_string(how_bright);
         }
         //;
@@ -258,8 +248,9 @@ void writer_fn(data_pack *shared_state) {
 }
 
 void configuration_fn(data_pack *shared_state) {
-  for (; shared_state->are_we_still_going(); this_thread::sleep_for(1min)) {
-    
+  for (; shared_state->are_we_still_going(); this_thread::sleep_for(2min)) {
+    //TODO check for power state of device
+    //TODO refresh configuration from configuration file(s)
   }
 }
 

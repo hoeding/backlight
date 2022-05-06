@@ -83,6 +83,29 @@ vector<path> get_backlights_from_config_file(path config) {
   return returner;
 }
 
+/*inline vector<string> filename_to_vector_of_strings(path filename) {
+  vector<string> returner{};
+  // Open the File
+  ifstream in(filename);
+  string str;
+  // Check if object is valid
+  if (!in) {
+    dbg(true, 0, "Cannot open the File:", filename);
+  } else {
+    dbg(true, 0, "File opened:", filename);
+
+    // Read the next line from File untill it reaches the end.
+    while (getline(in, str)) {
+      // Line contains string of length > 0 then save it in vector
+      if (str.size() > 0)
+        returner.push_back(str);
+    }
+  }
+  // Close The File
+  in.close();
+  return returner;
+}*/
+
 vector<path> scan_for_valid_backlights() {
   vector<path> returner{};
   path sysfs_backlight_root = "/sys/class/backlight";
