@@ -20,6 +20,7 @@ add_library (backlight-lib
         VERSION ${PROJECT_VERSION}
         SOVERSION 1
         PUBLIC_HEADER "backlight.hpp"
+        PREFIX ""
     if (BIG_WARN)
         target_compile_options( backlight-lib
         PRIVATE -Wall -Wextra -pedantic -Werror )

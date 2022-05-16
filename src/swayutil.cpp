@@ -112,8 +112,6 @@ public:
   };
 };
 
-
-
 const std::array<string, 12> months = {
   "Jan",
   "Feb",
@@ -148,10 +146,10 @@ const std::array<string, 60> mins_secs = {
 };
 
 // Eat a bag of rocks Hipparchus.
-const std::array<string, 24> hours =
-    {
-        "12", "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11"
-};
+const std::array<string, 24> hours = {
+    "12", "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11",
+    "12", "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11"
+}; //TODO 24 hour time
 
 string am_pm(int hour) {
   return ( (hour >= 12 ) ? "PM" : "AM");
@@ -164,9 +162,16 @@ void my_time_fn(data_pack *shared_state) {
       time_t now = time(0);
       struct tm tstruct;
           tstruct = *localtime(&now);
-      formatted_time = days.at(tstruct.tm_wday) + " " + to_string(1900 + tstruct.tm_year) + "-" + months.at(tstruct.tm_mon) + "-" + to_string(tstruct.tm_mday) + " " \
-      + to_string(tstruct.tm_hour % 12) + 
-      ":" + mins_secs.at(tstruct.tm_min) + ":" + mins_secs.at(tstruct.tm_sec) + " " + am_pm(tstruct.tm_hour);
+      
+      formatted_time = 
+                days.at(tstruct.tm_wday)
+        + " " + to_string(1900 + tstruct.tm_year)
+        + "-" + months.at(tstruct.tm_mon)
+        + "-" + to_string(tstruct.tm_mday)
+        + " " + hours.at(tstruct.tm_hour % 12)
+        + ":" + mins_secs.at(tstruct.tm_min)
+        + ":" + mins_secs.at(tstruct.tm_sec)
+        + " " + am_pm(tstruct.tm_hour);
       shared_state->swap_my_time(formatted_time);
     }
 
@@ -198,7 +203,7 @@ void battery_fn(data_pack *shared_state) {
       }
     };
   } catch (...) {
-    dbg(true, 0, "Battery thread caught unknown exception, terminating");
+    dbg(true, 0, "Battery thread caught unhandled exception, terminating");
     shared_state->stop();
   }
 };

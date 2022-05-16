@@ -15,7 +15,6 @@ using namespace std;
 using logging::dbg;
 using std::filesystem::path;
 
-/* @brief Average two numbers, returns 0 if indivisble */
 template <concepts::floatable Ta, concepts::floatable Tb>
 float ez_pct(const Ta numerator, const Tb denominator) {
   auto returner = 420.69;

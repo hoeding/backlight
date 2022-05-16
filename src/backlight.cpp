@@ -113,10 +113,27 @@ vector<path> scan_for_valid_backlights() {
     for (path device_path : fs::directory_iterator(sysfs_backlight_root)) {
       if (fs::exists(device_path / "max_brightness") and
           fs::exists(device_path / "actual_brightness") and
-          fs::exists(device_path / "brightness")) {
-        returner.emplace_back(device_path);
+          fs::exists(device_path / "brightness")) 
+      {
+        bool already_exists = false;
+        for (auto it : returner){
+          if (device_path == it) {
+            already_exists = true;
+          }
+        }
+        if (!already_exists) {
+          returner.emplace_back(device_path);
+        }
       }
     }
+  }
+  return returner;
+}
+vector<path> scan_for_valid_backlights_unique() {
+  //TODO, template this with vector version
+  vector<path> returner;
+  for (auto it : scan_for_valid_backlights()){
+    returner.emplace_back(it);
   }
   return returner;
 }

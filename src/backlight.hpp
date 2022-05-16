@@ -27,5 +27,6 @@ vector<path> default_paths();
 vector<path> get_backlights_from_config_file(path config);
 /** Scans through sysfs and returns full paths to valid devices */
 vector<path> scan_for_valid_backlights();
+vector<path> scan_for_valid_backlights_unique();
 } // namespace backlight
 #endif
