@@ -11,7 +11,7 @@ option(BIG_WARN "Use strict compiler flags" ON)
 configure_file(src/version.hpp.in project_version.hpp)
 include_directories(${CMAKE_CURRENT_BINARY_DIR})
 
-add_library (backlight-lib
+add_library (backlight-lib SHARED
         src/backlight.cpp)
     set_target_properties(backlight-lib
         PROPERTIES
