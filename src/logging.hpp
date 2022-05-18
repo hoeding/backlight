@@ -50,7 +50,7 @@ priority_enum operator and (priority_enum lhs, priority_enum rhs){
 
 */
 
-inline void header(const bool newLine, const int tabs) {
+inline void header(const bool &newLine, const int &tabs) {
   if (tabs < 0)
     exit(EXIT_FAILURE);
   if (newLine)
@@ -65,7 +65,7 @@ inline void dbg(const bool &newLine, const int &tabs, const string &description,
   header(newLine, tabs);
   try {
     cout << description << std::fixed << std::setprecision(13) << data << flush;
-  } catch (exception &e) {
+  } catch (exception const &e) {
     cerr << "template dbg threw exception: " << e.what() << endl;
   }
 }
