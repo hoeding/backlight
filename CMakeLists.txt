@@ -18,7 +18,6 @@ add_library (backlight SHARED
         CXX_STANDARD 20
         CXX_STANDARD_REQUIRED YES
         VERSION ${PROJECT_VERSION}
-        SOVERSION 1
         PUBLIC_HEADER "backlight.hpp"
     if (BIG_WARN)
         target_compile_options( backlight
@@ -28,7 +27,7 @@ add_library (backlight SHARED
         LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
         PUBLIC_HEADER DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/libjh/
         )
-    )
+)
 add_executable( bli
         src/backlight_increment.cpp)
     set_target_properties(bli
