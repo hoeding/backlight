@@ -18,6 +18,7 @@ add_library (backlight SHARED
         CXX_STANDARD 20
         CXX_STANDARD_REQUIRED YES
         VERSION ${PROJECT_VERSION}
+        SOVERSION ${PROJECT_VERSION}
         PUBLIC_HEADER "backlight.hpp"
     if (BIG_WARN)
         target_compile_options( backlight
