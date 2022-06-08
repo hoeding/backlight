@@ -3,7 +3,7 @@
 #include "logging.hpp"
 #include <iostream>
 #include <stdexcept>
-
+// cli > envvars > userconfig > globalconfig > defaults
 namespace arguments {
 using namespace std;
 using logging::dbg;
