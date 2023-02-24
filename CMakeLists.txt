@@ -9,6 +9,7 @@ include (GNUInstallDirs)
 find_package(Threads REQUIRED)
 option(BIG_WARN "Use strict compiler flags" ON)
 configure_file(src/version.hpp.in project_version.hpp)
+configure_file(src/GNUInstallDirs.hpp.in GNUInstallDirs.hpp)
 include_directories(${CMAKE_CURRENT_BINARY_DIR})
 
 add_library (backlight SHARED
@@ -81,7 +82,10 @@ add_executable( bla
         RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
 )
 add_executable( bl-scanner 
-       src/generate_config_file.cpp)
+       src/bl_scanner.cpp
+       )
+    target_link_libraries( bl-scanner
+        PRIVATE env-arg-parser)
     set_target_properties( bl-scanner
         PROPERTIES
         CXX_STANDARD 20
@@ -91,7 +95,7 @@ add_executable( bl-scanner
         PRIVATE VERSION=${PROJECT_VERSION})
     if (BIG_WARN)
         target_compile_options( bl-scanner
-            PRIVATE -Wall -Wextra -pedantic -Werror )
+            PRIVATE -Wall -Wextra -pedantic -Werror -fconcepts-diagnostics-depth=5)
     endif( BIG_WARN)
     target_link_libraries(bl-scanner backlight)
     install(TARGETS bl-scanner

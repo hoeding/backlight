@@ -1,0 +1,108 @@
+namespace configuration {
+using size_type = std::string::size_type;
+const size_type npos = std::string::npos;
+const size_type OOPSIE = 50;
+using exclusion_list = std::vector<std::string>;
+using namespace logging;
+class state {
+public:
+  state() { state{0, nullptr, nullptr}; };
+  state([[maybe_unused]] int argc, [[maybe_unused]] char *argv[],
+        [[maybe_unused]] char *envp[]) {
+
+    for (size_type i{0}, eq_pos{0}, oops{0};
+         (envp[i] != nullptr) and (oops <= OOPSIE); i++, oops++) {
+      std::string this_line{envp[i]};
+      eq_pos = this_line.find_first_of("=");
+      dbg(false, 0, this_line, eq_pos);
+
+      std::vector<size_type> colon_positions{eq_pos};
+      for (size_type cursor_pos{eq_pos}, ooops{0};
+           (cursor_pos != npos) and (ooops <= OOPSIE); ooops++) {
+        dbg(false, 0, "oops=", oops);
+        dbg(false, 0, "ooops=", ooops);
+        dbg(false, 0, "cursor_pos=", cursor_pos);
+
+        cursor_pos = this_line.find_first_of(":", cursor_pos);
+        if (cursor_pos == std::string::npos) //
+        {
+          dbg(false, 0, "cursor_pos=npos");
+          colon_positions.emplace_back(this_line.size());
+        } else {
+          colon_positions.emplace_back(cursor_pos);
+        }
+      };
+    }
+  };
+  template <class T>
+  void add_cli_option(T *data, char short_name, std::string long_name, std::string help_description, bool is_mandatory) {
+    return;
+  }
+
+  template <class T>
+  void add_cli_option(T *data, std::string long_name, std::string help_description, bool is_mandatory, exclusion_list exclude) {
+    return;
+  }
+
+  template <class T>
+  void add_cli_option(T *data, std::string long_name, std::string help_description, bool is_mandatory) {
+    add_cli_option(data, long_name, help_description, is_mandatory, exclusion_list{});
+    return;
+  }
+  void add_cli_option([[maybe_unused]] std::string data,
+                      [[maybe_unused]] std::string long_name,
+                      [[maybe_unused]] std::string help_description,
+                      [[maybe_unused]] bool is_mandatory) {
+    return;
+  }
+
+  std::string get_env([[maybe_unused]] std::string key){
+    return nullptr;
+  };
+
+  void printenv() {
+    for (auto iterator : environment_vars) {
+      //  std::cout << std::get<0> (iterator) << std::endl;
+    }
+  }
+  void parse_args([[maybe_unused]] int argc, [[maybe_unused]] char *argv[]) {
+    ;
+  }
+
+private:
+  std::vector<std::string> environment_vars{};
+};
+
+} // namespace configuration
+
+
+
+namespace utility {
+class options {
+public:
+  options();
+  options([[maybe_unused]] foo f){
+
+  };
+  options([[maybe_unused]] vector<foo> v_f){
+
+  };
+
+  // options (value_t)
+private:
+  // std::vector<std::tuple<short_opt_t, long_opt_t, help_text_t, value_t *,
+  // flags_e>> data;
+  // std::array<std
+};
+
+class program_options_t {
+public:
+  success parse_argc_argv([[maybe_unused]] int argc,
+                          [[maybe_unused]] char **argv) {
+    return true;
+  };
+  bool constexpr parse_program_opts();
+
+private:
+};
+} // namespace utility
