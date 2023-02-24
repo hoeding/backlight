@@ -1,19 +1,18 @@
 #ifndef BACKLIGHT_UTILITY_HPP
 #define BACKLIGHT_UTILITY_HPP
-#include "logging.hpp"
 #include "concepts.hpp"
-#include <concepts>
-#include <filesystem>
+#include "filesystem.hpp"
+#include "logging.hpp"
+#include <charconv>
 #include <fstream>
 #include <iostream>
 #include <numeric>
 #include <vector>
-#include <charconv>
 
 namespace utility {
 using namespace std;
 using logging::dbg;
-using std::filesystem::path;
+using fs::path;
 
 template <concepts::floatable Ta, concepts::floatable Tb>
 float ez_pct(const Ta numerator, const Tb denominator) {
@@ -35,7 +34,7 @@ inline int get_int_from_file(path path) noexcept {
     infile.close();
     return i;
   } catch (std::exception &e) {
-    cerr << "\n Caught:" << e.what();
+    //cerr << "\n Caught:" << e.what();
     return 0;
   } catch (...) {
     cerr << "\nUnhandled exception reading path:" << path << endl;

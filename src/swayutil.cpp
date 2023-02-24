@@ -9,6 +9,8 @@
 #include <project_version.hpp>
 #include <shared_mutex>
 #include <thread>
+#include <array>
+#include <string>
 #include <time.h>
 
 using std::endl;
@@ -17,6 +19,7 @@ using std::mutex;
 using std::shared_mutex;
 using std::string;
 using std::thread;
+using std::array;
 using std::to_string;
 using std::this_thread::sleep_for;
 using namespace utility;
@@ -112,7 +115,7 @@ public:
   };
 };
 
-const std::array<string, 12> months = {
+const array<string, 12> months = {
   "Jan",
   "Feb",
   "Mar",
@@ -219,9 +222,10 @@ void brightness_fn(data_pack *shared_state) {
       for (auto config_file : paths_to_config_files) {
         vector<path> devices = get_backlights_from_config_file(config_file);
         for (auto device : devices) {
-          float how_bright =
-          backlight::get_current_brightness_percentage(device);
-          new_str = new_str + " " + to_string(how_bright);
+          float how_bright = backlight::get_current_brightness_percentage(device);
+          if (isnormal (how_bright)) {
+            new_str = new_str + " " + to_string(how_bright);
+          }
         }
         //;
       }
