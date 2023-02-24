@@ -4,13 +4,12 @@
 #include "logging.hpp"
 #include "utility.hpp"
 #include <GNUInstallDirs.hpp>
-#include <filesystem>
+#include "filesystem.hpp"
 #include <vector>
 #include <string>
 
 using std::vector;
 using std::filesystem::directory_iterator;
-using std::filesystem::path;
 using namespace logging;
 using namespace utility;
 using namespace NOT_YET_NAMED;
@@ -61,10 +60,10 @@ int main([[maybe_unused]] const int argc, [[maybe_unused]] const char *argv[], [
 
   /* Look through the entries in /sys/class/backlight and find all supported
    * devices */
-  vector<path> valid_paths{};
-  path backlight_path{"/sys/class/backlight"};
+  vector<fs::path> valid_paths{};
+  fs::path backlight_path{"/sys/class/backlight"};
   if (exists(backlight_path) and is_directory(backlight_path)) {
-    for (path device : directory_iterator{backlight_path}) {
+    for (fs::path device : directory_iterator{backlight_path}) {
       if (exists(device / "brightness")) {
         valid_paths.emplace_back(device.filename());
         dbg(false, 0, "Device supports brightness", device);
@@ -93,7 +92,8 @@ int main([[maybe_unused]] const int argc, [[maybe_unused]] const char *argv[], [
     // install to XDG config dir "~/.config/backlight/config"
   };
 
-  if (by_path) {path parsed_path = by_path;
+  if (by_path){
+   // fs::path parsed_path = by_path;
     // install to given file
   }
 

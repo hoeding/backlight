@@ -12,6 +12,7 @@
 #include <array>
 #include <string>
 #include <time.h>
+#include <unistd.h>
 
 using std::endl;
 using std::flush;
@@ -263,8 +264,9 @@ void configuration_fn(data_pack *shared_state) {
   }
 }
 
-int main([[maybe_unused]] const int argc, [[maybe_unused]] const char *argv[]) {
 
+int main([[maybe_unused]] const int argc, [[maybe_unused]] const char *argv[]) {
+  bool isTTY = (bool)isatty(fileno(stdin));
   data_pack shared_state;
   thread configuration(configuration_fn, &shared_state);
   thread battery(battery_fn, &shared_state);
@@ -272,15 +274,19 @@ int main([[maybe_unused]] const int argc, [[maybe_unused]] const char *argv[]) {
   thread brightness(brightness_fn, &shared_state);
   thread writer(writer_fn, &shared_state);
 
-  cerr << "Joining battery\n" << flush;
+  if (isTTY) cerr << "Joining battery\n" << flush;
   battery.join();
-  cerr << "Joining my_time\n" << flush;
+  if (isTTY)
+    cerr << "Joining my_time\n" << flush;
   my_time.join();
-  cerr << "Joining brightness\n" << flush;
+  if (isTTY)
+    cerr << "Joining brightness\n" << flush;
   brightness.join();
-  cerr << "Joining writer\n" << flush;
+  if (isTTY)
+    cerr << "Joining writer\n" << flush;
   writer.join();
-  cerr << "Joining configuration" << flush;
+  if (isTTY)
+    cerr << "Joining configuration" << flush;
   configuration.join();
 }
 

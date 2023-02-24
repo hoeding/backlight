@@ -21,6 +21,7 @@ add_library (backlight SHARED
         VERSION ${PROJECT_VERSION}
         SOVERSION ${PROJECT_VERSION}
         PUBLIC_HEADER "backlight.hpp"
+        )
     if (BIG_WARN)
         target_compile_options( backlight
         PRIVATE -Wall -Wextra -pedantic -Werror )
@@ -28,8 +29,31 @@ add_library (backlight SHARED
     install(TARGETS backlight
         LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
         PUBLIC_HEADER DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/libjh/
-        )
 )
+
+add_library (env-arg-parser
+        src/environment_arguments.cpp)
+set_target_properties(env-arg-parser
+    PROPERTIES
+    CXX_STANDARD 20
+    CXX_STANDARD_REQUIRED YES
+    VERSION ${PROJECT_VERSION}
+    SOVERSION ${PROJECT_VERSION}
+    PUBLIC_HEADER "environment_arguments.hpp"
+    )
+    if(BIG_WARN)
+        target_compile_options(env-arg-parser
+            PRIVATE -Wall -Wextra -pedantic -Werror)
+    endif(BIG_WARN)
+
+install(TARGETS env-arg-parser
+    LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
+    PUBLIC_HEADER DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/libjh/
+)
+
+
+
+
 add_executable( bli
         src/backlight_increment.cpp)
     set_target_properties(bli
@@ -85,6 +109,7 @@ add_executable( bl-scanner
        src/bl_scanner.cpp
        )
     target_link_libraries( bl-scanner
+        PRIVATE backlight
         PRIVATE env-arg-parser)
     set_target_properties( bl-scanner
         PROPERTIES
@@ -97,7 +122,6 @@ add_executable( bl-scanner
         target_compile_options( bl-scanner
             PRIVATE -Wall -Wextra -pedantic -Werror -fconcepts-diagnostics-depth=5)
     endif( BIG_WARN)
-    target_link_libraries(bl-scanner backlight)
     install(TARGETS bl-scanner
         RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
 )
