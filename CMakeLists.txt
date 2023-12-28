@@ -84,8 +84,10 @@ add_executable( bla
 add_executable( bl-scanner 
        src/bl_scanner.cpp
        )
-    target_link_libraries( bl-scanner
-        PRIVATE env-arg-parser)
+    target_link_libraries( 
+        bl-scanner
+        backlight
+        env-arg-parser)
     set_target_properties( bl-scanner
         PROPERTIES
         CXX_STANDARD 20
@@ -97,7 +99,7 @@ add_executable( bl-scanner
         target_compile_options( bl-scanner
             PRIVATE -Wall -Wextra -pedantic -Werror -fconcepts-diagnostics-depth=5)
     endif( BIG_WARN)
-    target_link_libraries(bl-scanner backlight)
+    #target_link_libraries(bl-scanner backlight)
     install(TARGETS bl-scanner
         RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
 )

@@ -14,13 +14,12 @@ namespace utility {
 using namespace std;
 using logging::dbg;
 using std::filesystem::path;
+using std::string;
 
 template <concepts::floatable Ta, concepts::floatable Tb>
 float ez_pct(const Ta numerator, const Tb denominator) {
   auto returner = 420.69;
-  try {
-    returner =
-        (100.0 * (float)numerator) / (float)denominator; // Integer rounding
+  try { returner = (100.0 * (float)numerator) / (float)denominator; // Integer rounding
   } catch (...) { cerr << "ez_pct threw exception" << endl; }
   return returner;
 };
@@ -40,6 +39,24 @@ inline int get_int_from_file(path path) noexcept {
   } catch (...) {
     cerr << "\nUnhandled exception reading path:" << path << endl;
     return 0;
+  }
+};
+
+/* @brief  Attempt to get a single line from a file */
+inline string get_line_from_file(path path) noexcept {
+  try {
+    ifstream infile;
+    infile.open(path);
+    string str;
+    getline(infile, str);
+    infile.close();
+    return str;
+  } catch (std::exception &e) {
+    cerr << "\n Caught:" << e.what();
+    return {};
+  } catch (...) {
+    cerr << "\nUnhandled exception reading path:" << path << endl;
+    return {};
   }
 };
 
