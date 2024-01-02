@@ -9,7 +9,10 @@
 #include <project_version.hpp>
 #include <shared_mutex>
 #include <thread>
+#include <array>
+#include <string>
 #include <time.h>
+#include <unistd.h>
 
 using std::endl;
 using std::flush;
@@ -17,6 +20,7 @@ using std::mutex;
 using std::shared_mutex;
 using std::string;
 using std::thread;
+using std::array;
 using std::to_string;
 using std::this_thread::sleep_for;
 using namespace utility;
@@ -112,7 +116,7 @@ public:
   };
 };
 
-const std::array<string, 12> months = {
+const array<string, 12> months = {
   "Jan",
   "Feb",
   "Mar",
@@ -219,9 +223,10 @@ void brightness_fn(data_pack *shared_state) {
       for (auto config_file : paths_to_config_files) {
         vector<path> devices = get_backlights_from_config_file(config_file);
         for (auto device : devices) {
-          float how_bright =
-          backlight::get_current_brightness_percentage(device);
-          new_str = new_str + " " + to_string(how_bright);
+          float how_bright = backlight::get_current_brightness_percentage(device);
+          if (isnormal (how_bright)) {
+            new_str = new_str + " " + to_string(how_bright);
+          }
         }
         //;
       }
@@ -259,8 +264,9 @@ void configuration_fn(data_pack *shared_state) {
   }
 }
 
-int main([[maybe_unused]] const int argc, [[maybe_unused]] const char *argv[]) {
 
+int main([[maybe_unused]] const int argc, [[maybe_unused]] const char *argv[]) {
+  bool isTTY = (bool)isatty(fileno(stdin));
   data_pack shared_state;
   thread configuration(configuration_fn, &shared_state);
   thread battery(battery_fn, &shared_state);
@@ -268,15 +274,19 @@ int main([[maybe_unused]] const int argc, [[maybe_unused]] const char *argv[]) {
   thread brightness(brightness_fn, &shared_state);
   thread writer(writer_fn, &shared_state);
 
-  cerr << "Joining battery\n" << flush;
+  if (isTTY) cerr << "Joining battery\n" << flush;
   battery.join();
-  cerr << "Joining my_time\n" << flush;
+  if (isTTY)
+    cerr << "Joining my_time\n" << flush;
   my_time.join();
-  cerr << "Joining brightness\n" << flush;
+  if (isTTY)
+    cerr << "Joining brightness\n" << flush;
   brightness.join();
-  cerr << "Joining writer\n" << flush;
+  if (isTTY)
+    cerr << "Joining writer\n" << flush;
   writer.join();
-  cerr << "Joining configuration" << flush;
+  if (isTTY)
+    cerr << "Joining configuration" << flush;
   configuration.join();
 }
 
