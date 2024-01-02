@@ -14,7 +14,7 @@ using namespace backlight;
 /** @brief Single argument sets current brightness to N% */
 int main(const int argc, const char *argv[]) {
 #ifndef NDEBUG
-  dbg(true, 0, "backlight-absolute version VERSION");
+  dbg(true, 0, "backlight-absolute version PROJECT_VERSION");
 #endif
   int percentage = arguments::args_to_plus_minus_100_percent(argc, argv);
   /** builtin search paths */
