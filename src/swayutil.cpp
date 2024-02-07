@@ -191,7 +191,7 @@ void battery_fn(data_pack *shared_state) {
           ez_pct(get_int_from_file("/sys/class/power_supply/BAT0/charge_now"),
                  get_int_from_file("/sys/class/power_supply/BAT0/charge_full"));
       if (std::isnormal(val)) {
-        new_str = get_line_from_file("/sys/class/power_supply/BAT0/status") + " " + to_string(val);
+        new_str = get_line_from_file("/sys/class/power_supply/BAT0/status") + " " + to_string_sigfigs(val, 2) +"%";
         if (old_str.compare(new_str) != 0) {
           old_str = new_str;
           shared_state->swap_battery(new_str);

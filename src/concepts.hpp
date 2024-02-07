@@ -21,5 +21,8 @@ concept convertible_to_string =
 };
 template <class T>
 concept floatable = (std::is_convertible<T, float>::value);
+
+template<class T>
+concept numeric = std::is_arithmetic_v<T>;
 } // namespace concepts
 #endif

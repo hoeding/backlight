@@ -99,6 +99,25 @@ inline void strings_to_file_with_newline(vector<T> vecOfStr, path filename) {
 }
 
 
+// @brief Returns a string from any numeric type with truncation
+template<concepts::floatable T>
+string to_string_sigfigs (T val, uint whole_digits, uint decimal_digits){
+
+  bool returns_decimal_point = (decimal_digits) ? 2 : 1;
+  //string returner;
+  //returner.reserve (whole_digits + (int)returns_decimal_point + decimal_digits + 1 /*null terminator*/);
+  //char *c_string[whole_digits + decimal_digits + ((decimal_digits) ? 2 : 1)];
+  std::vector <char> (std::size_t(whole_digits + (int)returns_decimal_point + decimal_digits + 1; /*null terminator*/)) returner;// = {};
+  //char * c_string[whole_digits + (int)returns_decimal_point + decimal_digits + 1 /*null terminator*/];
+  float whole_nums = val;
+  float fractional_nums = val;
+  uint position;
+    for (position = ; whole_digits > 0; whole_digits--){
+      uint digit = whole_nums % 10;
+
+    }
+}
+
 //TODO
 template<concepts::floatable T>
 void to_string_sigfigures (T value, string stringy, int left, int right) {
