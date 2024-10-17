@@ -15,7 +15,6 @@
 #include <string>
 #include <time.h>
 #include <unistd.h>
-#include <unistd.h>
 
 using std::endl;
 using std::flush;
@@ -23,7 +22,6 @@ using std::mutex;
 using std::shared_mutex;
 using std::string;
 using std::thread;
-using std::array;
 using std::array;
 using std::to_string;
 using std::this_thread::sleep_for;
@@ -271,7 +269,7 @@ void configuration_fn(data_pack *shared_state) {
 
 int main([[maybe_unused]] const int argc, [[maybe_unused]] const char *argv[]) {
   bool isTTY = (bool)isatty(fileno(stdin));
-  bool isTTY = (bool)isatty(fileno(stdin));
+
   data_pack shared_state;
   thread configuration(configuration_fn, &shared_state);
   thread battery(battery_fn, &shared_state);
@@ -280,27 +278,19 @@ int main([[maybe_unused]] const int argc, [[maybe_unused]] const char *argv[]) {
   thread writer(writer_fn, &shared_state);
 
   if (isTTY) cerr << "Joining battery\n" << flush;
-  if (isTTY) cerr << "Joining battery\n" << flush;
   battery.join();
-  if (isTTY)
-    cerr << "Joining my_time\n" << flush;
   if (isTTY)
     cerr << "Joining my_time\n" << flush;
   my_time.join();
   if (isTTY)
     cerr << "Joining brightness\n" << flush;
-  if (isTTY)
-    cerr << "Joining brightness\n" << flush;
   brightness.join();
-  if (isTTY)
-    cerr << "Joining writer\n" << flush;
   if (isTTY)
     cerr << "Joining writer\n" << flush;
   writer.join();
   if (isTTY)
     cerr << "Joining configuration" << flush;
-  if (isTTY)
-    cerr << "Joining configuration" << flush;
+
   configuration.join();
 }
 
