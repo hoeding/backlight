@@ -14,13 +14,12 @@ namespace utility {
 using namespace std;
 using logging::dbg;
 using std::filesystem::path;
+using std::string;
 
 template <concepts::floatable Ta, concepts::floatable Tb>
 float ez_pct(const Ta numerator, const Tb denominator) {
   auto returner = 420.69;
-  try {
-    returner =
-        (100.0 * (float)numerator) / (float)denominator; // Integer rounding
+  try { returner = (100.0 * (float)numerator) / (float)denominator; // Integer rounding
   } catch (...) { cerr << "ez_pct threw exception" << endl; }
   return returner;
 };
@@ -40,6 +39,24 @@ inline int get_int_from_file(path path) noexcept {
   } catch (...) {
     cerr << "\nUnhandled exception reading path:" << path << endl;
     return 0;
+  }
+};
+
+/* @brief  Attempt to get a single line from a file */
+inline string get_line_from_file(path path) noexcept {
+  try {
+    ifstream infile;
+    infile.open(path);
+    string str;
+    getline(infile, str);
+    infile.close();
+    return str;
+  } catch (std::exception &e) {
+    cerr << "\n Caught:" << e.what();
+    return {};
+  } catch (...) {
+    cerr << "\nUnhandled exception reading path:" << path << endl;
+    return {};
   }
 };
 
@@ -81,8 +98,21 @@ inline void strings_to_file_with_newline(vector<T> vecOfStr, path filename) {
   strings_to_file(big_string, filename);
 }
 
+template <concepts::floatable T
+ /*, non negative T*/>
+string to_string_sigfigs (T val, uint digits){
+  int whole_value = static_cast<int> (val);
+  string returner = to_string(whole_value);
+  T unwhole_value = static_cast<T> (val - whole_value);
+  if (digits){returner = returner +".";
+    for (;digits > 0; digits--){
+      int tenfold = static_cast<int>(unwhole_value * 10);
+      returner = returner + to_string(tenfold);
+    }
+  }
 
-//TODO
+  return returner;
+};
 template<concepts::floatable T>
 void to_string_sigfigures (T value, string stringy, int left, int right) {
   int char_count;

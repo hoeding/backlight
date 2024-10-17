@@ -164,7 +164,7 @@ void my_time_fn(data_pack *shared_state) {
           tstruct = *localtime(&now);
       
       formatted_time = 
-                days.at(tstruct.tm_wday)
+         "🗓" + days.at(tstruct.tm_wday)
         + " " + to_string(1900 + tstruct.tm_year)
         + "-" + months.at(tstruct.tm_mon)
         + "-" + to_string(tstruct.tm_mday)
@@ -188,10 +188,10 @@ void battery_fn(data_pack *shared_state) {
     string new_str{""};
     for (float val; shared_state->are_we_still_going(); sleep_for(4000ms)) {
       val =
-          ez_pct(get_int_from_file("/sys/class/power_supply/BAT0/charge_now"),
-                 get_int_from_file("/sys/class/power_supply/BAT0/charge_full"));
+          ez_pct(static_cast<float>(get_int_from_file("/sys/class/power_supply/BAT0/charge_now")),
+                 static_cast<float> (get_int_from_file("/sys/class/power_supply/BAT0/charge_full")));
       if (std::isnormal(val)) {
-        new_str = to_string(val);
+        new_str = "🔋" + get_line_from_file("/sys/class/power_supply/BAT0/status") + " " + to_string_sigfigs(val, 2) +"%";
         if (old_str.compare(new_str) != 0) {
           old_str = new_str;
           shared_state->swap_battery(new_str);
@@ -213,15 +213,15 @@ void brightness_fn(data_pack *shared_state) {
   try {
     cerr << "brightness_fn called\n" << flush;
     string old_str = shared_state->read_brightness();
-    string new_str{""};
+    string new_str;
     vector<path> paths_to_config_files = backlight::default_paths();
     for (; shared_state->are_we_still_going(); sleep_for(500ms)) {
       for (auto config_file : paths_to_config_files) {
         vector<path> devices = get_backlights_from_config_file(config_file);
         for (auto device : devices) {
-          float how_bright =
+          int how_bright =
           backlight::get_current_brightness_percentage(device);
-          new_str = new_str + " " + to_string(how_bright);
+          new_str = new_str + "🔦" + to_string(how_bright);
         }
         //;
       }

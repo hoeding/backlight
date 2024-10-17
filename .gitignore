@@ -44,3 +44,4 @@ manual_build
 .clang-format
 .ccls
 clean.sh
+.vscode/
