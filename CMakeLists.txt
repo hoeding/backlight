@@ -87,7 +87,8 @@ add_executable( bl-scanner
     target_link_libraries( 
         bl-scanner
         backlight
-        env-arg-parser)
+        #env-arg-parser
+        )
     set_target_properties( bl-scanner
         PROPERTIES
         CXX_STANDARD 20
