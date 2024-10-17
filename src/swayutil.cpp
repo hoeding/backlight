@@ -11,6 +11,8 @@
 #include <thread>
 #include <array>
 #include <string>
+#include <array>
+#include <string>
 #include <time.h>
 #include <unistd.h>
 
@@ -264,8 +266,10 @@ void configuration_fn(data_pack *shared_state) {
 }
 
 
+
 int main([[maybe_unused]] const int argc, [[maybe_unused]] const char *argv[]) {
   bool isTTY = (bool)isatty(fileno(stdin));
+
   data_pack shared_state;
   thread configuration(configuration_fn, &shared_state);
   thread battery(battery_fn, &shared_state);
@@ -286,6 +290,7 @@ int main([[maybe_unused]] const int argc, [[maybe_unused]] const char *argv[]) {
   writer.join();
   if (isTTY)
     cerr << "Joining configuration" << flush;
+
   configuration.join();
 }
 
