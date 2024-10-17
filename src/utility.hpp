@@ -99,8 +99,21 @@ inline void strings_to_file_with_newline(vector<T> vecOfStr, path filename) {
   strings_to_file(big_string, filename);
 }
 
+template <concepts::floatable T
+ /*, non negative T*/>
+string to_string_sigfigs (T val, uint digits){
+  int whole_value = static_cast<int> (val);
+  string returner = to_string(whole_value);
+  T unwhole_value = static_cast<T> (val - whole_value);
+  if (digits){returner = returner +".";
+    for (;digits > 0; digits--){
+      int tenfold = static_cast<int>(unwhole_value * 10);
+      returner = returner + to_string(tenfold);
+    }
+  }
 
-//TODO
+  return returner;
+};
 template<concepts::floatable T>
 void to_string_sigfigures (T value, string stringy, int left, int right) {
   int char_count;
